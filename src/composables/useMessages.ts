@@ -2,7 +2,7 @@ import type { ApiError, Message } from '@/api/types'
 import { fetchMessagesService, solveMessageService } from '@/service/messages'
 import { useGameStore } from '@/stores/game'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { computed, ref, toValue, watch, type MaybeRefOrGetter } from 'vue'
+import { computed, ref, toValue, type MaybeRefOrGetter } from 'vue'
 
 export const messagesQueryKey = (gameId: string) => ['messages', gameId] as const
 
@@ -27,7 +27,7 @@ export const useMessages = (gameId: MaybeRefOrGetter<string>) => {
   })
 
   const solveMutation = useMutation<
-    Awaited<ReturnType<typeof solveMessageService>>, //useMutation expects resolved type not a promise? since when?
+    Awaited<ReturnType<typeof solveMessageService>>,
     ApiError,
     string,
     { previousMessages?: Message[] }
@@ -80,14 +80,6 @@ export const useMessages = (gameId: MaybeRefOrGetter<string>) => {
   const refetchMessages = () => {
     queryClient.invalidateQueries({ queryKey: queryKey.value })
   }
-
-  watch(
-    () => messagesQuery.data.value,
-    (data) => {
-      console.log('messagesQuery data:', data)
-    },
-    { immediate: true },
-  )
 
   return {
     messagesQuery,
