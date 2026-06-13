@@ -23,10 +23,6 @@ export interface Message {
   probability: string
 }
 
-export interface MessagesResponse {
-  messages: Message[]
-}
-
 export interface SolveMessageResponse {
   success: boolean
   lives: number
@@ -41,10 +37,6 @@ export interface ShopItem {
   id: string
   name: string
   cost: number
-}
-
-export interface ShopItemsResponse {
-  items: ShopItem[]
 }
 
 export interface PurchaseItemResponse {

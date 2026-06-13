@@ -1,12 +1,11 @@
 import { useGameStore } from '@/stores/game'
-import { computed, type Ref } from 'vue'
+import { computed } from 'vue'
 
-export const useTurnsRemaining = (messageExpiresIn: number, fetchTurn: Ref<number | null>) => {
+export const useTurnsRemaining = (messageExpiresIn: number, fetchTurn: number) => {
   const store = useGameStore()
 
   return computed(() => {
-    const turn = store.gameTurn ?? 0
-    const ft = fetchTurn.value ?? 0
-    return ft + messageExpiresIn - turn
+    const currentTurn = store.gameTurn ?? 0
+    return fetchTurn + messageExpiresIn - currentTurn
   })
 }
