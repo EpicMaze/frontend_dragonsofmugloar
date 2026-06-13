@@ -9,6 +9,20 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
     },
+    {
+      path: '/play',
+      name: 'play',
+      component: () => import('@/views/GameView.vue'),
+    },
+    {
+      path: '/game-over',
+      name: 'game-over',
+      component: () => import('@/views/GameOverView.vue'),
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/',
+    },
   ],
 })
 
