@@ -1,0 +1,69 @@
+import type { ApiError, ShopItem } from '@/api/types'
+import { fetchShopItemsService, purchaseItemService } from '@/service/shop'
+import { useGameStore } from '@/stores/game'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { computed } from 'vue'
+
+export const shopQueryKey = (gameId: string) => ['shopItems', gameId] as const
+
+export const useShop = (gameId: string) => {
+  const queryKey = shopQueryKey(gameId)
+  const store = useGameStore()
+  const queryClient = useQueryClient()
+
+  const shopQuery = useQuery({
+    queryKey,
+    queryFn: () => fetchShopItemsService(gameId),
+    enabled: computed(() => !!gameId && store.isGameActive),
+    staleTime: Infinity,
+    refetchOnReconnect: false,
+  })
+
+  const purchaseMutation = useMutation<
+    Awaited<ReturnType<typeof purchaseItemService>>,
+    ApiError,
+    string,
+    { prevShopItems?: ShopItem[] }
+  >({
+    mutationFn: (itemId: string) => {
+      return purchaseItemService(gameId, itemId)
+    },
+    onMutate: async (_itemId: string) => {
+      // cancel ongoing querues
+      await queryClient.cancelQueries({ queryKey: queryKey })
+
+      // take snapshot
+      const prevShopItems = queryClient.getQueryData<ShopItem[]>(queryKey)
+
+      return { prevShopItems }
+    },
+    onSuccess: (result) => {
+      console.log('PurchaseItemResponse', result)
+
+      const updatedStats = {
+        gold: result.gold,
+        lives: result.lives,
+        level: result.level,
+        turn: result.turn,
+      }
+      store.updateGameStats(updatedStats)
+
+      if (result.lives <= 0) {
+        store.setGameOver('lost')
+        return
+      }
+    },
+    onError: (error: ApiError, _, context) => {
+      // rollback
+      if (context?.prevShopItems) {
+        queryClient.setQueryData(queryKey, context.prevShopItems)
+      }
+      console.error('PurchaseItemResponse', error)
+    },
+  })
+
+  return {
+    shopQuery,
+    purchaseMutation,
+  }
+}
