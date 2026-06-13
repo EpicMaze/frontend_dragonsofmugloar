@@ -37,6 +37,16 @@ export interface SolveMessageResponse {
   message: string
 }
 
+export interface ShopItem {
+  id: string
+  name: string
+  cost: number
+}
+
+export interface ShopItemsResponse {
+  items: ShopItem[]
+}
+
 export interface PurchaseItemResponse {
   shoppingSuccess: string
   gold: number
@@ -45,12 +55,12 @@ export interface PurchaseItemResponse {
   turn: number
 }
 
-export interface ShopItem {
-  id: string
-  name: string
-  cost: number
-}
-
 export interface GameOverReason {
   reason: 'lost' | 'expired'
+}
+
+export interface ApiError {
+  message: string
+  status: number
+  details?: unknown
 }
