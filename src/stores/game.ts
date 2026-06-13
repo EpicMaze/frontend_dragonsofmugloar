@@ -16,7 +16,6 @@ export interface GameOver {
   reason: 'lost' | 'expired' | null
 }
 
-// no unnecessary show off with types
 export interface GameStatsUpdate {
   lives?: number
   gold?: number
@@ -49,10 +48,10 @@ export const useGameStore = defineStore(
       reputation.value = rep
     }
 
-    const setGameOver = (reason: 'lost' | 'expired', finalStats?: FinalGameStats) => {
+    const setGameOver = (reason: 'lost' | 'expired') => {
       gameOver.value = {
         isOver: true,
-        finalStats: finalStats ?? null,
+        finalStats: game.value,
         reason,
       }
     }
