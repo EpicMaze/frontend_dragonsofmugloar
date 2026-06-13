@@ -1,26 +1,27 @@
-import type { ApiError, Message, SolveMessageResponse } from '@/api/types'
+import type { ApiError, Message } from '@/api/types'
 import { fetchMessagesService, solveMessageService } from '@/service/messages'
 import { useGameStore } from '@/stores/game'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { storeToRefs } from 'pinia'
+import { computed, ref } from 'vue'
 
-type MessagesCache = {
-  messages: Message[]
-  fetchTurn?: number
-}
+export const messagesQueryKey = (gameId: string) => ['messages', gameId] as const
 
 export const useMessages = (gameId: string) => {
+  const queryKey = messagesQueryKey(gameId)
   const queryClient = useQueryClient()
   const store = useGameStore()
-  const { isGameActive, gameTurn } = storeToRefs(store)
+
+  const fetchTurn = ref<number | null>(null)
 
   const messagesQuery = useQuery({
-    queryKey: ['messages', gameId],
+    queryKey,
     queryFn: async () => {
       const messages = await fetchMessagesService(gameId)
-      return { messages, fetchTurn: gameTurn }
+
+      fetchTurn.value = store.gameTurn
+      return messages
     },
-    enabled: !!gameId && isGameActive,
+    enabled: computed(() => !!gameId && store.isGameActive),
     staleTime: Infinity,
     refetchOnReconnect: false,
   })
@@ -29,28 +30,25 @@ export const useMessages = (gameId: string) => {
     Awaited<ReturnType<typeof solveMessageService>>, //useMutation expects resolved type not a promise? since when?
     ApiError,
     string,
-    { previousMessages?: MessagesCache }
+    { previousMessages?: Message[] }
   >({
     mutationFn: (messageId: string) => solveMessageService(gameId, messageId),
     onMutate: async (messageId: string) => {
       // cancel ongoing queries
-      await queryClient.cancelQueries({ queryKey: ['messages', gameId] })
+      await queryClient.cancelQueries({ queryKey: queryKey })
 
       // take snapshot
-      const previousMessages = queryClient.getQueryData<MessagesCache>(['messages', gameId])
+      const previousMessages = queryClient.getQueryData<Message[]>(queryKey)
 
       // optimistic update -> remove message from cached object
-      queryClient.setQueryData<MessagesCache>(['messages', gameId], (old) => {
-        if (!old?.messages) return old
-        return {
-          ...old,
-          messages: old.messages.filter((msg) => msg.adId !== messageId),
-        }
+      queryClient.setQueryData<Message[]>(queryKey, (old) => {
+        if (!old) return old
+        return old.filter((msg) => msg.adId !== messageId)
       })
 
       return { previousMessages }
     },
-    onSuccess: (result: SolveMessageResponse) => {
+    onSuccess: (result) => {
       const updatedStats = {
         lives: result.lives,
         gold: result.gold,
@@ -68,25 +66,25 @@ export const useMessages = (gameId: string) => {
       // invalidate reputation -> refetch
       queryClient.invalidateQueries({ queryKey: ['reputation', gameId] })
     },
-    onError: (error: ApiError, messageId, context) => {
+    onError: (error, _messageId, context) => {
       // if you can't beat them join them (c) Sun Tzu probably
       if (error.status === 400) return
       // rollback
-      if (context?.previousMessages) {
-        queryClient.setQueryData(['messages', gameId], context.previousMessages)
+      if (context) {
+        queryClient.setQueryData(queryKey, context)
       }
-      // gameNotify.error(error.message)
       console.error('SolveMessageResponse', error)
     },
   })
 
   const refetchMessages = () => {
-    queryClient.invalidateQueries({ queryKey: ['messages', gameId] })
+    queryClient.invalidateQueries({ queryKey: queryKey })
   }
 
   return {
     messagesQuery,
     solveMutation,
     refetchMessages,
+    fetchTurn,
   }
 }
