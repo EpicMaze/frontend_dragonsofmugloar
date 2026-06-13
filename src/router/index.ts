@@ -1,5 +1,6 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, type RouteLocationRaw } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import { useGameStore } from '@/stores/game'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,6 +25,22 @@ const router = createRouter({
       redirect: '/',
     },
   ],
+})
+
+router.beforeEach((to) => {
+  const store = useGameStore()
+  const { isGameActive, gameOver } = store
+
+  const rules: Partial<Record<string, () => RouteLocationRaw | undefined>> = {
+    play: () => {
+      if (!isGameActive) return gameOver.isOver ? { name: 'game-over' } : { name: 'home' }
+    },
+    'game-over': () => {
+      if (!gameOver.isOver) return { name: 'home' }
+    },
+  }
+
+  return rules[to.name as string]?.()
 })
 
 export default router

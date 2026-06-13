@@ -2,7 +2,9 @@
   import { storeToRefs } from 'pinia'
   import { useGameStore } from '@/stores/game'
   import { useGame } from '@/composables/useGame'
+  import { useRouter } from 'vue-router'
 
+  const router = useRouter()
   const store = useGameStore()
   const { gameOver } = storeToRefs(store)
   const { startMutation } = useGame()
@@ -33,6 +35,12 @@
       @click="onRestart"
     >
       {{ startMutation.isPending.value ? 'Starting...' : 'Play Again' }}
+    </button>
+    <button
+      class="rounded-md bg-primary px-6 py-3 text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+      @click="router.push('/')"
+    >
+      Back to menu
     </button>
   </div>
 </template>
