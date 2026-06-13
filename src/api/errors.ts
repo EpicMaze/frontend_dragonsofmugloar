@@ -44,3 +44,6 @@ export const responseToApiError = (response: AxiosResponse): ApiError => {
     details: data ?? null,
   }
 }
+
+export const isApiError = (error: unknown): error is ApiError =>
+  typeof error === 'object' && error !== null && 'status' in error && 'message' in error
