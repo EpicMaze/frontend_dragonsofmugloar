@@ -70,7 +70,7 @@
       <main class="space-y-4">
         <MessageList
           v-if="currentView === 'messages'"
-          :messages="messagesQuery.data.value?.messages ?? []"
+          :messages="messagesQuery.data.value ?? []"
           :is-loading="messagesQuery.isPending.value"
           :is-error="messagesQuery.isError.value"
           :solve-mutation="solveMutation"
