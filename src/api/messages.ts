@@ -1,8 +1,8 @@
 import { apiClient } from './client'
-import type { MessagesResponse, SolveMessageResponse } from './types'
+import type { Message, SolveMessageResponse } from './types'
 
 export const getMessages = (gameId: string) => {
-  return apiClient.get<MessagesResponse>(`/${gameId}/messages`)
+  return apiClient.get<Message[]>(`/${gameId}/messages`)
 }
 
 export const postSolveMessage = (gameId: string, messageId: string) => {

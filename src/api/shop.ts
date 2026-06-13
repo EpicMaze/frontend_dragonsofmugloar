@@ -1,8 +1,8 @@
 import { apiClient } from './client'
-import type { PurchaseItemResponse, ShopItemsResponse } from './types'
+import type { PurchaseItemResponse, ShopItem } from './types'
 
 export const getShopItems = (gameId: string) => {
-  return apiClient.get<ShopItemsResponse>(`/${gameId}/shop`)
+  return apiClient.get<ShopItem[]>(`/${gameId}/shop`)
 }
 
 export const postPurchaseItem = (gameId: string, itemId: string) => {
