@@ -1,6 +1,6 @@
 import type { Game, Reputation } from '@/api/types'
 import { defineStore } from 'pinia'
-import { computed, readonly, ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export interface FinalGameStats {
   score: number
@@ -73,9 +73,9 @@ export const useGameStore = defineStore(
     }
 
     return {
-      game: readonly(game),
-      reputation: readonly(reputation),
-      gameOver: readonly(gameOver),
+      game,
+      reputation,
+      gameOver,
 
       isGameActive,
       gameId,
