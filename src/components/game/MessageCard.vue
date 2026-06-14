@@ -1,11 +1,13 @@
 <script setup lang="ts">
-  import { useTurnsRemaining } from '@/composables/useTurnsRemaining'
   import type { Message } from '@/api/types'
+  import { computed, ref } from 'vue'
+  import { assessRisk, calcTurnsRemaining, decryptMessage } from '@/lib/messageAnalysis'
+  import MessageRiskLabel from './MessageRiskLabel.vue'
+  import { useGameStore } from '@/stores/game'
 
   const props = defineProps<{
-    message: Omit<Message, 'message'>
-    text: string
-    fetchTurn: number | null
+    message: Message
+    fetchTurn: number
     loading: boolean
   }>()
 
@@ -13,31 +15,68 @@
     solve: [adId: string]
   }>()
 
-  const turnsRemaining = useTurnsRemaining(props.message.expiresIn, props.fetchTurn ?? 0)
+  const store = useGameStore()
+  const isDecrypted = ref<boolean>(false)
+  const decrypted = computed(() => decryptMessage(props.message))
+  const risk = computed(() => assessRisk(props.message))
+
+  const turnsRemaining = computed(() =>
+    calcTurnsRemaining(props.message.expiresIn, props.fetchTurn ?? 0, store.game?.turn ?? 0),
+  )
+
+  const display = computed(() => {
+    if (!isDecrypted.value) {
+      return {
+        text: props.message.message,
+        probability: props.message.probability,
+      }
+    }
+    return {
+      text: decrypted.value.decryptedMessage ?? props.message.message,
+      probability: decrypted.value.decryptedProbability ?? props.message.probability,
+    }
+  })
+
+  const turnsClass = computed(() => {
+    if (turnsRemaining.value <= 0) return 'text-red-500'
+    if (turnsRemaining.value <= 4) return 'text-orange-500'
+    return 'text-slate-500'
+  })
 </script>
 
 <template>
   <div
     class="flex flex-col rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
   >
-    <!-- Expire label placeholder -->
-    <div
-      class="mb-2 text-xs font-medium"
-      :class="turnsRemaining <= 0 ? 'text-red-500' : 'text-slate-500'"
-    >
-      {{ turnsRemaining <= 0 ? 'Expired' : `${turnsRemaining} turns left` }}
+    <div class="mb-3 flex items-center justify-between">
+      <span class="text-xs font-medium" :class="turnsClass">
+        {{ turnsRemaining <= 0 ? `Expired (${turnsRemaining})` : `${turnsRemaining} turns left` }}
+      </span>
+      <MessageRiskLabel :score="risk.score" :break-down="risk.breakdown" :notes="risk.notes" />
     </div>
 
     <div class="flex-1 space-y-3">
       <div>
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Task</p>
-        <p class="mt-1 text-sm font-medium text-slate-900">{{ text }}</p>
+        <div class="flex items-center justify-between">
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Task</p>
+          <button
+            v-if="message.encrypted"
+            class="text-xs font-medium text-blue-500 hover:text-blue-700"
+            @click="isDecrypted = !isDecrypted"
+          >
+            {{ isDecrypted ? 'Show encrypted' : 'Decrypt' }}
+          </button>
+        </div>
+        <p class="mt-1 text-sm font-medium text-slate-900 break-words">{{ display.text }}</p>
+        <p v-if="message.encrypted && !isDecrypted" class="mt-1 text-xs text-slate-400">
+          {{ message.encrypted === 1 ? 'Base64 encoded' : 'ROT13 encoded' }}
+        </p>
       </div>
 
       <div class="grid grid-cols-2 gap-3 text-sm">
         <div>
           <p class="text-xs text-slate-500">Probability</p>
-          <p class="font-medium text-slate-700">{{ message.probability ?? '—' }}</p>
+          <p class="font-medium text-slate-700 break-words">{{ display.probability }}</p>
         </div>
         <div>
           <p class="text-xs text-slate-500">Reward</p>
