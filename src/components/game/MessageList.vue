@@ -55,8 +55,7 @@
         v-for="message in messages"
         :key="message.adId"
         :message="message"
-        :text="message.message"
-        :fetch-turn="fetchTurn"
+        :fetch-turn="fetchTurn ?? 0"
         :loading="isPending"
         @solve="solveMessage"
       />
