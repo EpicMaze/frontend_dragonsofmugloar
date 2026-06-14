@@ -2,29 +2,31 @@ import { createRouter, createWebHistory, type RouteLocationRaw } from 'vue-route
 import HomeView from '@/views/HomeView.vue'
 import { useGameStore } from '@/stores/game'
 
+export const routes = [
+  {
+    path: '/',
+    name: 'home',
+    component: HomeView,
+  },
+  {
+    path: '/play',
+    name: 'play',
+    component: () => import('@/views/GameView.vue'),
+  },
+  {
+    path: '/game-over',
+    name: 'game-over',
+    component: () => import('@/views/GameOverView.vue'),
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/',
+  },
+]
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: HomeView,
-    },
-    {
-      path: '/play',
-      name: 'play',
-      component: () => import('@/views/GameView.vue'),
-    },
-    {
-      path: '/game-over',
-      name: 'game-over',
-      component: () => import('@/views/GameOverView.vue'),
-    },
-    {
-      path: '/:pathMatch(.*)*',
-      redirect: '/',
-    },
-  ],
+  routes,
 })
 
 router.beforeEach((to) => {
