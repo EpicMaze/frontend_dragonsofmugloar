@@ -38,7 +38,7 @@
 <template>
   <div class="flex min-h-screen flex-col items-center justify-center gap-6">
     <h1 class="text-4xl font-bold">Dragons of Mugloar</h1>
-    <p class="text-muted-foreground">Solve messages, buy items, survive.</p>
+    <p class="text-muted-foreground">Solve ads, buy items, survive.</p>
 
     <div class="flex flex-col gap-3 w-full max-w-xs">
       <button

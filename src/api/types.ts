@@ -14,16 +14,16 @@ export interface Reputation {
   underworld: number
 }
 
-export interface Message {
+export interface Ad {
   adId: string
   message: string
   reward: number
   expiresIn: number
-  encrypted?: number
+  encrypted: number | null
   probability: string
 }
 
-export interface SolveMessageResponse {
+export interface SolveAdResponse {
   success: boolean
   lives: number
   gold: number

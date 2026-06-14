@@ -1,4 +1,4 @@
-export const MESSAGE_DECODERS: Record<number, (s: string) => string> = {
+export const ADS_DECODERS: Record<number, (s: string) => string> = {
   1: (s: string) => atob(s),
   2: (s: string) => {
     return s.replace(/[a-zA-Z]/g, (char) => {

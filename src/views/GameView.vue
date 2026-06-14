@@ -3,25 +3,21 @@
   import { useRouter } from 'vue-router'
   import { storeToRefs } from 'pinia'
   import { useGameStore } from '@/stores/game'
-  import { useMessages } from '@/composables/useMessages'
   import { useReputation } from '@/composables/useReputation'
-  import { useShop } from '@/composables/useShop'
-  import MessageList from '@/components/game/MessageList.vue'
+  import AdList from '@/components/game/AdList.vue'
   import ShopPanel from '@/components/game/ShopPanel.vue'
   import GameStats from '@/components/game/GameStats.vue'
   import ReputationStats from '@/components/game/ReputationStats.vue'
 
-  type GameView = 'messages' | 'shop'
+  type GameView = 'ads' | 'shop'
 
   const router = useRouter()
   const store = useGameStore()
   const { game } = storeToRefs(store)
 
-  const currentView = ref<GameView>('messages')
+  const currentView = ref<GameView>('ads')
   const gameId = computed(() => game.value?.gameId ?? '')
 
-  const { messagesQuery, solveMutation, refetchMessages, fetchTurn } = useMessages(gameId.value)
-  const { shopQuery, purchaseMutation } = useShop(gameId.value)
   useReputation(gameId.value)
 </script>
 
@@ -43,13 +39,13 @@
             <button
               :class="[
                 'w-full rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                currentView === 'messages'
+                currentView === 'ads'
                   ? 'bg-blue-500 text-white'
                   : 'bg-slate-100 text-slate-700 hover:bg-slate-200',
               ]"
-              @click="currentView = 'messages'"
+              @click="currentView = 'ads'"
             >
-              Messages
+              Ads
             </button>
             <button
               :class="[
@@ -68,21 +64,8 @@
 
       <!-- CENTER: Main Viewport -->
       <main class="space-y-4">
-        <MessageList
-          v-if="currentView === 'messages'"
-          :messages="messagesQuery.data.value ?? []"
-          :is-loading="messagesQuery.isPending.value"
-          :is-error="messagesQuery.isError.value"
-          :solve-mutation="solveMutation"
-          :fetch-turn="fetchTurn"
-          @refetch="refetchMessages"
-        />
-        <ShopPanel
-          v-if="currentView === 'shop'"
-          :items="shopQuery.data.value ?? []"
-          :is-loading="shopQuery.isPending.value"
-          :purchase-mutation="purchaseMutation"
-        />
+        <AdList v-if="currentView === 'ads'" />
+        <ShopPanel v-if="currentView === 'shop'" />
       </main>
 
       <!-- RIGHT: Stats & Reputation -->

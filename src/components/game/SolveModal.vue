@@ -1,9 +1,9 @@
 <script setup lang="ts">
-  import type { SolveMessageResponse } from '@/api/types'
+  import type { SolveAdResponse } from '@/api/types'
 
   defineProps<{
     open: boolean
-    result: SolveMessageResponse | null
+    result: SolveAdResponse | null
     expired: boolean
     loading: boolean
   }>()
@@ -49,7 +49,7 @@
         <!-- Result -->
         <template v-else-if="result">
           <h2 class="text-lg font-semibold text-slate-900">
-            {{ result.success ? '✅ Message Solved!' : '❌ Failed to Solve' }}
+            {{ result.success ? '✅ Ad Solved!' : '❌ Failed to Solve' }}
           </h2>
           <div
             class="mt-4 grid grid-cols-2 gap-3 rounded-3xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700"
