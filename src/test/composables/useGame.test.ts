@@ -24,8 +24,9 @@ describe('useGame', () => {
   it('resets store and sets new game on success', async () => {
     const {
       wrapper: { startMutation },
+      pinia,
     } = mountComposable(() => useGame())
-    const store = useGameStore()
+    const store = useGameStore(pinia)
     const resetSpy = vi.spyOn(store, 'resetGame')
     const setGameSpy = vi.spyOn(store, 'setGame')
 

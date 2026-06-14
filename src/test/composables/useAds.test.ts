@@ -86,6 +86,7 @@ describe('useAds', () => {
   it('updates game stats on solve success', async () => {
     const {
       wrapper: { solveMutation },
+      pinia,
     } = mountComposable(() => {
       const store = useGameStore()
       store.setGame(mockGame)
@@ -96,7 +97,7 @@ describe('useAds', () => {
     solveMutation.mutate('msg-1')
     await flushPromises()
 
-    const store = useGameStore()
+    const store = useGameStore(pinia)
     expect(store.game?.gold).toBe(100)
     expect(store.game?.turn).toBe(2)
   })
@@ -117,6 +118,7 @@ describe('useAds', () => {
     )
     const {
       wrapper: { solveMutation },
+      pinia,
     } = mountComposable(() => {
       const store = useGameStore()
       store.setGame(mockGame)
@@ -127,7 +129,7 @@ describe('useAds', () => {
     solveMutation.mutate('msg-1')
     await flushPromises()
 
-    const store = useGameStore()
+    const store = useGameStore(pinia)
     expect(store.gameOver.isOver).toBe(true)
     expect(store.gameOver.reason).toBe('lost')
   })

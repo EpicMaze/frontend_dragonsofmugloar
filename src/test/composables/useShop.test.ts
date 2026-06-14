@@ -42,6 +42,7 @@ describe('useShop', () => {
   it('updates game stats on purchase success', async () => {
     const {
       wrapper: { purchaseMutation },
+      pinia,
     } = mountComposable(() => {
       const store = useGameStore()
       store.setGame(mockGame)
@@ -52,7 +53,7 @@ describe('useShop', () => {
     purchaseMutation.mutate('item-1')
     await flushPromises()
 
-    const store = useGameStore()
+    const store = useGameStore(pinia)
     expect(store.game?.gold).toBe(50)
     expect(store.game?.turn).toBe(1)
   })
@@ -71,6 +72,7 @@ describe('useShop', () => {
     )
     const {
       wrapper: { purchaseMutation },
+      pinia,
     } = mountComposable(() => {
       const store = useGameStore()
       store.setGame(mockGame)
@@ -81,7 +83,7 @@ describe('useShop', () => {
     purchaseMutation.mutate('item-1')
     await flushPromises()
 
-    const store = useGameStore()
+    const store = useGameStore(pinia)
     expect(store.gameOver.isOver).toBe(true)
     expect(store.gameOver.reason).toBe('lost')
   })
