@@ -16,9 +16,8 @@
   const { game } = storeToRefs(store)
 
   const currentView = ref<GameView>('ads')
-  const gameId = computed(() => game.value?.gameId ?? '')
 
-  useReputation(gameId.value)
+  useReputation(computed(() => game.value?.gameId ?? ''))
 </script>
 
 <template>
