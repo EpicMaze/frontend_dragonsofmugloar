@@ -15,6 +15,14 @@ export const handlers = [
     }),
   ),
 
+  http.post(`${BASE}/:gameId/investigate/reputation`, () =>
+    HttpResponse.json({
+      people: 1,
+      state: 2,
+      underworld: 3,
+    }),
+  ),
+
   http.get(`${BASE}/:gameId/messages`, () =>
     HttpResponse.json([
       {
