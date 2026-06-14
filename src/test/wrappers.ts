@@ -16,14 +16,43 @@ const createTestQueryClient = () => {
 }
 
 export const mountWithPinia = (component: Component, options: MountingOptions<unknown> = {}) => {
-  return mount(component, {
+  const pinia = createTestingPinia({ stubActions: false })
+  const wrapper = mount(component, {
     global: {
-      plugins: [
-        createTestingPinia({ stubActions: false }), // use real store
-      ],
+      plugins: [pinia],
+      stubs: { Teleport: true },
     },
     ...options,
   })
+
+  return { wrapper, pinia }
+}
+
+export const mountWithQuery = (component: Component, options: MountingOptions<unknown> = {}) => {
+  const pinia = createTestingPinia({ stubActions: false })
+
+  const wrapper = mount(component, {
+    global: {
+      plugins: [pinia, [VueQueryPlugin, { queryClient: createTestQueryClient() }]],
+      stubs: { Teleport: true },
+    },
+    ...options,
+  })
+  return { wrapper, pinia }
+}
+
+export const mountWithApp = (component: Component, options: MountingOptions<unknown> = {}) => {
+  const router = createRouter({ history: createMemoryHistory(), routes })
+  const pinia = createTestingPinia({ stubActions: false })
+
+  const wrapper = mount(component, {
+    global: {
+      plugins: [pinia, [VueQueryPlugin, { queryClient: createTestQueryClient() }], router],
+      stubs: { Teleport: true },
+    },
+    ...options,
+  })
+  return { wrapper, pinia, router }
 }
 
 export const mountComposable = <T>(composable: () => T) => {
