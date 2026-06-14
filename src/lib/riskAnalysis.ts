@@ -2,7 +2,7 @@
 
 import type { Ad } from '@/api/types'
 import type { DecryptResult, RiskAssessment, RiskNotes } from './types'
-import { DIFFICULTIES, MAX_DIFFICULTY, ADS_DECODERS, RISK_WEIGHTS } from './const'
+import { MAX_DIFFICULTY, ADS_DECODERS, RISK_WEIGHTS, DIFFICULTY_ORDER } from './const'
 
 export const decodeAd = (ad: Pick<Ad, 'message' | 'probability' | 'encrypted'>): DecryptResult => {
   if (!ad.encrypted)
@@ -42,7 +42,7 @@ export const calcTurnsRemaining = (
 
 const evalDifficulty = (probability: string): number | null => {
   if (!probability) return null
-  const index = DIFFICULTIES.indexOf(probability)
+  const index = DIFFICULTY_ORDER.indexOf(probability)
   return index === -1 ? null : index
 }
 
