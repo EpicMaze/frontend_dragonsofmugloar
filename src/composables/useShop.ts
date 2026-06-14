@@ -2,18 +2,18 @@ import type { ApiError, ShopItem } from '@/api/types'
 import { fetchShopItemsService, purchaseItemService } from '@/service/shop'
 import { useGameStore } from '@/stores/game'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { computed } from 'vue'
+import { computed, toValue, type MaybeRefOrGetter } from 'vue'
 
 export const shopQueryKey = (gameId: string) => ['shopItems', gameId] as const
 
-export const useShop = (gameId: string) => {
-  const queryKey = shopQueryKey(gameId)
+export const useShop = (gameId: MaybeRefOrGetter<string>) => {
+  const queryKey = computed(() => shopQueryKey(toValue(gameId)))
   const store = useGameStore()
   const queryClient = useQueryClient()
 
   const shopQuery = useQuery({
     queryKey,
-    queryFn: () => fetchShopItemsService(gameId),
+    queryFn: () => fetchShopItemsService(toValue(gameId)),
     enabled: computed(() => !!gameId && store.isGameActive),
     staleTime: Infinity,
     refetchOnReconnect: false,
@@ -26,14 +26,14 @@ export const useShop = (gameId: string) => {
     { prevShopItems?: ShopItem[] }
   >({
     mutationFn: (itemId: string) => {
-      return purchaseItemService(gameId, itemId)
+      return purchaseItemService(toValue(gameId), itemId)
     },
     onMutate: async (_itemId: string) => {
       // cancel ongoing querues
-      await queryClient.cancelQueries({ queryKey: queryKey })
+      await queryClient.cancelQueries({ queryKey: queryKey.value })
 
       // take snapshot
-      const prevShopItems = queryClient.getQueryData<ShopItem[]>(queryKey)
+      const prevShopItems = queryClient.getQueryData<ShopItem[]>(queryKey.value)
 
       return { prevShopItems }
     },
@@ -56,7 +56,7 @@ export const useShop = (gameId: string) => {
     onError: (error: ApiError, _, context) => {
       // rollback
       if (context?.prevShopItems) {
-        queryClient.setQueryData(queryKey, context.prevShopItems)
+        queryClient.setQueryData(queryKey.value, context.prevShopItems)
       }
       console.error('PurchaseItemResponse', error)
     },
