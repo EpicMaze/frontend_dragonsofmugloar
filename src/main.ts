@@ -12,12 +12,10 @@ const app = createApp(App)
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 
-const queryClient = createQueryClient()
+const queryClient = createQueryClient(pinia)
 
 app.use(pinia)
 app.use(router)
 app.use(VueQueryPlugin, { queryClient })
 
 app.mount('#app')
-
-export { pinia }

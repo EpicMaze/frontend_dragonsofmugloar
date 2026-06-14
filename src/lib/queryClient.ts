@@ -1,15 +1,15 @@
-import { pinia } from '@/main'
 import { useGameStore } from '@/stores/game'
 import { QueryClient, QueryCache, MutationCache } from '@tanstack/vue-query'
 import { isApiError } from '@/api/errors'
+import type { Pinia } from 'pinia'
 
-export const createQueryClient = () => {
+export const createQueryClient = (piniaInstance: Pinia) => {
   return new QueryClient({
     queryCache: new QueryCache({
       onError: (error) => {
         if (!isApiError(error)) return
         if (error.status !== 410 && error.status !== 404) return
-        const store = useGameStore(pinia)
+        const store = useGameStore(piniaInstance)
         if (!store.game || store.gameOver.isOver) return
         store.setGameOver(error.status === 410 ? 'lost' : 'expired')
       },
@@ -18,7 +18,7 @@ export const createQueryClient = () => {
       onError: (error) => {
         if (!isApiError(error)) return
         if (error.status !== 410 && error.status !== 404) return
-        const store = useGameStore(pinia)
+        const store = useGameStore(piniaInstance)
         if (!store.game || store.gameOver.isOver) return
         store.setGameOver(error.status === 410 ? 'lost' : 'expired')
       },
