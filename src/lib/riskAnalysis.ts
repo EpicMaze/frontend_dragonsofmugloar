@@ -2,7 +2,7 @@
 
 import type { Ad } from '@/api/types'
 import type { DecryptResult, RiskAssessment, RiskNotes } from './types'
-import { DIFFICULTIES, MAX_DIFFICULTY, ADS_DECODERS, RISK_WEIGHTS } from './const'
+import { MAX_DIFFICULTY_LEVEL, ADS_DECODERS, RISK_WEIGHTS, DIFFICULTY_LEVELS } from './const'
 
 export const decodeAd = (ad: Pick<Ad, 'message' | 'probability' | 'encrypted'>): DecryptResult => {
   if (!ad.encrypted)
@@ -42,8 +42,8 @@ export const calcTurnsRemaining = (
 
 const evalDifficulty = (probability: string): number | null => {
   if (!probability) return null
-  const index = DIFFICULTIES.indexOf(probability)
-  return index === -1 ? null : index
+  const level = DIFFICULTY_LEVELS[probability]
+  return level !== undefined ? level : null
 }
 
 // general formula for risk assess
@@ -54,7 +54,7 @@ export const assessRisk = (ad: Ad): RiskAssessment => {
 
   const probability = decryptResult.decryptedProbability ?? ad.probability
   const rawDifficulty = evalDifficulty(probability)
-  const difficultyLevel = rawDifficulty ?? MAX_DIFFICULTY // unknown = max risk
+  const difficultyLevel = rawDifficulty ?? MAX_DIFFICULTY_LEVEL // unknown = max risk
 
   const score =
     RISK_WEIGHTS.difficulty * difficultyLevel + (isEncrypted ? RISK_WEIGHTS.encrypted : 0)
