@@ -56,10 +56,10 @@ export const mountWithApp = (component: Component, options: MountingOptions<unkn
 }
 
 export const mountComposable = <T>(composable: () => T) => {
-  let result: T
+  let wrapper: T
   const TestComponent = defineComponent({
     setup() {
-      result = composable()
+      wrapper = composable()
       return () => null
     },
   })
@@ -77,5 +77,5 @@ export const mountComposable = <T>(composable: () => T) => {
     },
   })
 
-  return [result!, router] as const
+  return { wrapper: wrapper!, router, pinia } as const
 }

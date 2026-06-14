@@ -20,7 +20,9 @@ const mockGame = {
 
 describe('useShop', () => {
   it('fetches shop items when game is active', async () => {
-    const [{ shopQuery }] = mountComposable(() => {
+    const {
+      wrapper: { shopQuery },
+    } = mountComposable(() => {
       const store = useGameStore()
       store.setGame(mockGame)
       return useShop('game-1')
@@ -30,13 +32,17 @@ describe('useShop', () => {
   })
 
   it('does not fetch when game not active', async () => {
-    const [{ shopQuery }] = mountComposable(() => useShop('game-1'))
+    const {
+      wrapper: { shopQuery },
+    } = mountComposable(() => useShop('game-1'))
     await flushPromises()
     expect(shopQuery.data.value).toBeUndefined()
   })
 
   it('updates game stats on purchase success', async () => {
-    const [{ purchaseMutation }] = mountComposable(() => {
+    const {
+      wrapper: { purchaseMutation },
+    } = mountComposable(() => {
       const store = useGameStore()
       store.setGame(mockGame)
       return useShop('game-1')
@@ -63,7 +69,9 @@ describe('useShop', () => {
         }),
       ),
     )
-    const [{ purchaseMutation }] = mountComposable(() => {
+    const {
+      wrapper: { purchaseMutation },
+    } = mountComposable(() => {
       const store = useGameStore()
       store.setGame(mockGame)
       return useShop('game-1')
@@ -84,7 +92,9 @@ describe('useShop', () => {
         HttpResponse.json({ message: 'error' }, { status: 500 }),
       ),
     )
-    const [{ shopQuery, purchaseMutation }] = mountComposable(() => {
+    const {
+      wrapper: { shopQuery, purchaseMutation },
+    } = mountComposable(() => {
       const store = useGameStore()
       store.setGame(mockGame)
       return useShop('game-1')

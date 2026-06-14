@@ -27,7 +27,7 @@ describe('useReputation', () => {
   })
 
   it('does not fetch when game not active', async () => {
-    const [query] = mountComposable(() => useReputation('game-1'))
+    const { wrapper: query } = mountComposable(() => useReputation('game-1'))
     await flushPromises()
     expect(query.data.value).toBeUndefined()
   })

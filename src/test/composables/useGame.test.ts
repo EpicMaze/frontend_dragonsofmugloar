@@ -10,7 +10,10 @@ const BASE = import.meta.env.VITE_API_BASE_URL
 
 describe('useGame', () => {
   it('navigates to /play on success', async () => {
-    const [{ startMutation }, router] = mountComposable(() => useGame())
+    const {
+      wrapper: { startMutation },
+      router,
+    } = mountComposable(() => useGame())
     const pushSpy = vi.spyOn(router, 'push')
     startMutation.mutate()
     await flushPromises()
@@ -19,7 +22,9 @@ describe('useGame', () => {
   })
 
   it('resets store and sets new game on success', async () => {
-    const [{ startMutation }] = mountComposable(() => useGame())
+    const {
+      wrapper: { startMutation },
+    } = mountComposable(() => useGame())
     const store = useGameStore()
     const resetSpy = vi.spyOn(store, 'resetGame')
     const setGameSpy = vi.spyOn(store, 'setGame')
@@ -37,7 +42,10 @@ describe('useGame', () => {
         HttpResponse.json({ message: 'error' }, { status: 500 }),
       ),
     )
-    const [{ startMutation }, router] = mountComposable(() => useGame())
+    const {
+      wrapper: { startMutation },
+      router,
+    } = mountComposable(() => useGame())
     const pushSpy = vi.spyOn(router, 'push')
     startMutation.mutate()
     await flushPromises()
