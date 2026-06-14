@@ -1,9 +1,9 @@
 import { createTestingPinia } from '@pinia/testing'
 import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { mount, type MountingOptions } from '@vue/test-utils'
-import { createRouter, createMemoryHistory } from 'vue-router'
-import { routes } from '@/router'
+import { createAppRouter, eagerRoutes } from '@/router'
 import { defineComponent, type Component } from 'vue'
+import { createMemoryHistory } from 'vue-router'
 
 // fresh query per test so no cache shenanigans
 const createTestQueryClient = () => {
@@ -42,13 +42,13 @@ export const mountWithQuery = (component: Component, options: MountingOptions<un
 }
 
 export const mountWithApp = (component: Component, options: MountingOptions<unknown> = {}) => {
-  const router = createRouter({ history: createMemoryHistory(), routes })
   const pinia = createTestingPinia({ stubActions: false })
+  const router = createAppRouter(pinia, createMemoryHistory(), eagerRoutes)
 
   const wrapper = mount(component, {
     global: {
       plugins: [pinia, [VueQueryPlugin, { queryClient: createTestQueryClient() }], router],
-      stubs: { Teleport: true },
+      stubs: { Teleport: true, VueQueryDevtools: true },
     },
     ...options,
   })
@@ -66,10 +66,7 @@ export const mountComposable = <T>(composable: () => T) => {
 
   const pinia = createTestingPinia({ stubActions: false })
   const queryClient = createTestQueryClient()
-  const router = createRouter({
-    history: createMemoryHistory(),
-    routes,
-  })
+  const router = createAppRouter(pinia)
 
   mount(TestComponent, {
     global: {
