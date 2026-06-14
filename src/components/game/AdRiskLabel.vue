@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { MAX_DIFFICULTY } from '@/lib/const'
+  import { MAX_RISK_SCORE } from '@/lib/const'
   import type { RiskBreakdown, RiskNotes } from '@/lib/types'
   import { computed } from 'vue'
 
@@ -9,10 +9,8 @@
     notes: RiskNotes | null
   }>()
 
-  const MAX_SCORE = MAX_DIFFICULTY + 1 // max difficulty + encrypted weight
-
   const riskLabel = computed(() => {
-    const ratio = props.score / MAX_SCORE
+    const ratio = props.score / MAX_RISK_SCORE
 
     if (ratio <= 0.25) return { text: 'SAFE', class: 'bg-green-100 text-green-700' }
     if (ratio <= 0.5) return { text: 'MODERATE', class: 'bg-yellow-100 text-yellow-700' }

@@ -21,7 +21,7 @@ export const DIFFICULTIES = {
   SUICIDE_MISSION: 'Suicide mission',
 } as const
 
-export const DIFFICULTY_ORDER: string[] = [
+const DIFFICULTY_ORDER = [
   DIFFICULTIES.WALK_IN_THE_PARK,
   DIFFICULTIES.PIECE_OF_CAKE,
   DIFFICULTIES.SURE_THING,
@@ -32,11 +32,19 @@ export const DIFFICULTY_ORDER: string[] = [
   DIFFICULTIES.PLAYING_WITH_FIRE,
   DIFFICULTIES.RATHER_DETRIMENTAL,
   DIFFICULTIES.SUICIDE_MISSION,
-]
+] satisfies string[]
 
-export const MAX_DIFFICULTY = DIFFICULTY_ORDER.length - 1
+export const DIFFICULTY_LEVELS = Object.fromEntries(
+  DIFFICULTY_ORDER.map((name, index) => [name, index]),
+) as Record<string, number>
+
+export const MAX_DIFFICULTY = DIFFICULTY_ORDER[DIFFICULTY_ORDER.length - 1]!
+export const MAX_DIFFICULTY_LEVEL = DIFFICULTY_LEVELS[MAX_DIFFICULTY]!
 
 export const RISK_WEIGHTS = {
   difficulty: 1,
   encrypted: 1,
 }
+
+export const MAX_RISK_SCORE =
+  RISK_WEIGHTS.difficulty * MAX_DIFFICULTY_LEVEL + RISK_WEIGHTS.encrypted
