@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import { http, HttpResponse } from 'msw'
-import { mountComposable } from '../createWrapper'
+import { mountComposable } from '../wrappers'
 import { useShop } from '@/composables/useShop'
 import { useGameStore } from '@/stores/game'
 import { server } from '../server'
@@ -20,9 +20,11 @@ const mockGame = {
 
 describe('useShop', () => {
   it('fetches shop items when game is active', async () => {
-    const [{ shopQuery }] = mountComposable(() => {
+    const {
+      wrapper: { shopQuery },
+    } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useShop('game-1')
     })
     await flushPromises()
@@ -30,15 +32,20 @@ describe('useShop', () => {
   })
 
   it('does not fetch when game not active', async () => {
-    const [{ shopQuery }] = mountComposable(() => useShop('game-1'))
+    const {
+      wrapper: { shopQuery },
+    } = mountComposable(() => useShop('game-1'))
     await flushPromises()
     expect(shopQuery.data.value).toBeUndefined()
   })
 
   it('updates game stats on purchase success', async () => {
-    const [{ purchaseMutation }] = mountComposable(() => {
+    const {
+      wrapper: { purchaseMutation },
+      pinia,
+    } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useShop('game-1')
     })
     await flushPromises()
@@ -46,7 +53,7 @@ describe('useShop', () => {
     purchaseMutation.mutate('item-1')
     await flushPromises()
 
-    const store = useGameStore()
+    const store = useGameStore(pinia)
     expect(store.game?.gold).toBe(50)
     expect(store.game?.turn).toBe(1)
   })
@@ -63,9 +70,12 @@ describe('useShop', () => {
         }),
       ),
     )
-    const [{ purchaseMutation }] = mountComposable(() => {
+    const {
+      wrapper: { purchaseMutation },
+      pinia,
+    } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useShop('game-1')
     })
     await flushPromises()
@@ -73,7 +83,7 @@ describe('useShop', () => {
     purchaseMutation.mutate('item-1')
     await flushPromises()
 
-    const store = useGameStore()
+    const store = useGameStore(pinia)
     expect(store.gameOver.isOver).toBe(true)
     expect(store.gameOver.reason).toBe('lost')
   })
@@ -84,9 +94,11 @@ describe('useShop', () => {
         HttpResponse.json({ message: 'error' }, { status: 500 }),
       ),
     )
-    const [{ shopQuery, purchaseMutation }] = mountComposable(() => {
+    const {
+      wrapper: { shopQuery, purchaseMutation },
+    } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useShop('game-1')
     })
     await flushPromises()

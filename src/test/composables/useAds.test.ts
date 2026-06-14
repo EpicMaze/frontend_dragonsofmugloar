@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import { http, HttpResponse } from 'msw'
-import { mountComposable } from '../createWrapper'
+import { mountComposable } from '../wrappers'
 import { useAds } from '@/composables/useAds'
 import { useGameStore } from '@/stores/game'
 import { server } from '../server'
@@ -20,9 +20,11 @@ const mockGame = {
 
 describe('useAds', () => {
   it('fetches ads when game is active', async () => {
-    const [{ adsQuery }] = mountComposable(() => {
+    const {
+      wrapper: { adsQuery },
+    } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useAds('game-1')
     })
     await flushPromises()
@@ -30,15 +32,19 @@ describe('useAds', () => {
   })
 
   it('does not fetch when game not active', async () => {
-    const [{ adsQuery }] = mountComposable(() => useAds('game-1'))
+    const {
+      wrapper: { adsQuery },
+    } = mountComposable(() => useAds('game-1'))
     await flushPromises()
     expect(adsQuery.data.value).toBeUndefined()
   })
 
   it('sets fetchTurn to current gameTurn after fetch', async () => {
-    const [{ fetchTurn }] = mountComposable(() => {
+    const {
+      wrapper: { fetchTurn },
+    } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame({ ...mockGame, turn: 4 })
+      store.$patch({ game: { ...mockGame, turn: 4 } })
       return useAds('game-1')
     })
     await flushPromises()
@@ -46,9 +52,11 @@ describe('useAds', () => {
   })
 
   it('removes solved ad from cache immediately on mutate (optimistic)', async () => {
-    const [{ adsQuery, solveMutation }] = mountComposable(() => {
+    const {
+      wrapper: { adsQuery, solveMutation },
+    } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useAds('game-1')
     })
     await flushPromises()
@@ -76,9 +84,12 @@ describe('useAds', () => {
   })
 
   it('updates game stats on solve success', async () => {
-    const [{ solveMutation }] = mountComposable(() => {
+    const {
+      wrapper: { solveMutation },
+      pinia,
+    } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useAds('game-1')
     })
     await flushPromises()
@@ -86,7 +97,7 @@ describe('useAds', () => {
     solveMutation.mutate('msg-1')
     await flushPromises()
 
-    const store = useGameStore()
+    const store = useGameStore(pinia)
     expect(store.game?.gold).toBe(100)
     expect(store.game?.turn).toBe(2)
   })
@@ -105,9 +116,12 @@ describe('useAds', () => {
         }),
       ),
     )
-    const [{ solveMutation }] = mountComposable(() => {
+    const {
+      wrapper: { solveMutation },
+      pinia,
+    } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useAds('game-1')
     })
     await flushPromises()
@@ -115,7 +129,7 @@ describe('useAds', () => {
     solveMutation.mutate('msg-1')
     await flushPromises()
 
-    const store = useGameStore()
+    const store = useGameStore(pinia)
     expect(store.gameOver.isOver).toBe(true)
     expect(store.gameOver.reason).toBe('lost')
   })
@@ -126,9 +140,11 @@ describe('useAds', () => {
         HttpResponse.json({ message: 'expired' }, { status: 400 }),
       ),
     )
-    const [{ adsQuery, solveMutation }] = mountComposable(() => {
+    const {
+      wrapper: { adsQuery, solveMutation },
+    } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useAds('game-1')
     })
     await flushPromises()
@@ -145,9 +161,11 @@ describe('useAds', () => {
         HttpResponse.json({ message: 'server error' }, { status: 500 }),
       ),
     )
-    const [{ adsQuery, solveMutation }] = mountComposable(() => {
+    const {
+      wrapper: { adsQuery, solveMutation },
+    } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useAds('game-1')
     })
     await flushPromises()

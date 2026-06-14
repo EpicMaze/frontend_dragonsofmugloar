@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
-import { mountComposable } from '../createWrapper'
+import { mountComposable } from '../wrappers'
 import { useReputation } from '@/composables/useReputation'
 import { useGameStore } from '@/stores/game'
 
@@ -19,7 +19,7 @@ describe('useReputation', () => {
     let store: ReturnType<typeof useGameStore>
     mountComposable(() => {
       store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useReputation('game-1')
     })
     await flushPromises()
@@ -27,7 +27,7 @@ describe('useReputation', () => {
   })
 
   it('does not fetch when game not active', async () => {
-    const [query] = mountComposable(() => useReputation('game-1'))
+    const { wrapper: query } = mountComposable(() => useReputation('game-1'))
     await flushPromises()
     expect(query.data.value).toBeUndefined()
   })

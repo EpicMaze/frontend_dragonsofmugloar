@@ -9,7 +9,7 @@
   const store = useGameStore()
 
   const { adsQuery, solveMutation, refetchAds, fetchTurn } = useAds(
-    computed(() => store.gameId! ?? ''),
+    computed(() => store.gameId ?? ''),
   )
   const { solveAd, isPending, isOpen, handleOpenChange, result, expired } =
     useSolveModal(solveMutation)

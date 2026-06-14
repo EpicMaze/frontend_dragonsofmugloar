@@ -10,7 +10,7 @@
   const store = useGameStore()
   const { gameId } = storeToRefs(store)
 
-  const { shopQuery, purchaseMutation } = useShop(gameId.value!)
+  const { shopQuery, purchaseMutation } = useShop(computed(() => gameId.value ?? ''))
   const { purchaseItem, isPending, isOpen, handleOpenChange, result } =
     usePurchaseModal(purchaseMutation)
 

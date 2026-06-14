@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
-import { mountComposable } from '../createWrapper'
+import { mountComposable } from '../wrappers'
 import { useGame } from '@/composables/useGame'
 import { useGameStore } from '@/stores/game'
 import { http, HttpResponse } from 'msw'
@@ -10,7 +10,10 @@ const BASE = import.meta.env.VITE_API_BASE_URL
 
 describe('useGame', () => {
   it('navigates to /play on success', async () => {
-    const [{ startMutation }, router] = mountComposable(() => useGame())
+    const {
+      wrapper: { startMutation },
+      router,
+    } = mountComposable(() => useGame())
     const pushSpy = vi.spyOn(router, 'push')
     startMutation.mutate()
     await flushPromises()
@@ -19,8 +22,11 @@ describe('useGame', () => {
   })
 
   it('resets store and sets new game on success', async () => {
-    const [{ startMutation }] = mountComposable(() => useGame())
-    const store = useGameStore()
+    const {
+      wrapper: { startMutation },
+      pinia,
+    } = mountComposable(() => useGame())
+    const store = useGameStore(pinia)
     const resetSpy = vi.spyOn(store, 'resetGame')
     const setGameSpy = vi.spyOn(store, 'setGame')
 
@@ -37,7 +43,10 @@ describe('useGame', () => {
         HttpResponse.json({ message: 'error' }, { status: 500 }),
       ),
     )
-    const [{ startMutation }, router] = mountComposable(() => useGame())
+    const {
+      wrapper: { startMutation },
+      router,
+    } = mountComposable(() => useGame())
     const pushSpy = vi.spyOn(router, 'push')
     startMutation.mutate()
     await flushPromises()

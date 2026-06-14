@@ -42,7 +42,7 @@ const fireMutationError = (error: unknown) => {
 describe('queryCache onError', () => {
   it('calls setGameOver lost on 410', () => {
     const store = useGameStore()
-    store.setGame(mockGame)
+    store.$patch({ game: mockGame })
     const spy = vi.spyOn(store, 'setGameOver')
     fireQueryError({ message: 'lost', status: 410 })
     expect(spy).toHaveBeenCalledWith('lost')
@@ -50,7 +50,7 @@ describe('queryCache onError', () => {
 
   it('calls setGameOver expired on 404', () => {
     const store = useGameStore()
-    store.setGame(mockGame)
+    store.$patch({ game: mockGame })
     const spy = vi.spyOn(store, 'setGameOver')
     fireQueryError({ message: 'expired', status: 404 })
     expect(spy).toHaveBeenCalledWith('expired')
@@ -58,8 +58,11 @@ describe('queryCache onError', () => {
 
   it('does not call setGameOver when gameOver already set', () => {
     const store = useGameStore()
-    store.setGame(mockGame)
-    store.setGameOver('lost')
+    store.$patch({ game: mockGame })
+    store.$patch({
+      game: mockGame,
+      gameOver: { isOver: true, reason: 'lost', finalStats: mockGame },
+    })
     const spy = vi.spyOn(store, 'setGameOver')
     fireQueryError({ message: 'lost', status: 410 })
     expect(spy).not.toHaveBeenCalled()
@@ -74,7 +77,7 @@ describe('queryCache onError', () => {
 
   it('ignores 500 errors', () => {
     const store = useGameStore()
-    store.setGame(mockGame)
+    store.$patch({ game: mockGame })
     const spy = vi.spyOn(store, 'setGameOver')
     fireQueryError({ message: 'server error', status: 500 })
     expect(spy).not.toHaveBeenCalled()
@@ -82,7 +85,7 @@ describe('queryCache onError', () => {
 
   it('ignores non-ApiError shapes', () => {
     const store = useGameStore()
-    store.setGame(mockGame)
+    store.$patch({ game: mockGame })
     const spy = vi.spyOn(store, 'setGameOver')
     fireQueryError(new Error('network'))
     expect(spy).not.toHaveBeenCalled()
@@ -92,7 +95,7 @@ describe('queryCache onError', () => {
 describe('mutationCache onError', () => {
   it('calls setGameOver lost on 410', () => {
     const store = useGameStore()
-    store.setGame(mockGame)
+    store.$patch({ game: mockGame })
     const spy = vi.spyOn(store, 'setGameOver')
     fireMutationError({ message: 'lost', status: 410 })
     expect(spy).toHaveBeenCalledWith('lost')
@@ -100,8 +103,11 @@ describe('mutationCache onError', () => {
 
   it('does not call setGameOver when gameOver already set', () => {
     const store = useGameStore()
-    store.setGame(mockGame)
-    store.setGameOver('lost')
+    store.$patch({ game: mockGame })
+    store.$patch({
+      game: mockGame,
+      gameOver: { isOver: true, reason: 'lost', finalStats: mockGame },
+    })
     const spy = vi.spyOn(store, 'setGameOver')
     fireMutationError({ message: 'lost', status: 410 })
     expect(spy).not.toHaveBeenCalled()
