@@ -1,20 +1,18 @@
 // module for risk assesment of the message solve result
 
-import type { Message } from '@/api/types'
+import type { Ad } from '@/api/types'
 import type { DecryptResult, RiskAssessment, RiskNotes } from './types'
-import { DIFFICULTIES, MAX_DIFFICULTY, MESSAGE_DECODERS, RISK_WEIGHTS } from './const'
+import { DIFFICULTIES, MAX_DIFFICULTY, ADS_DECODERS, RISK_WEIGHTS } from './const'
 
-export const decryptMessage = (
-  ad: Pick<Message, 'message' | 'probability' | 'encrypted'>,
-): DecryptResult => {
+export const decodeAd = (ad: Pick<Ad, 'message' | 'probability' | 'encrypted'>): DecryptResult => {
   if (!ad.encrypted)
     return {
       decryptedMessage: ad.message,
       decryptedProbability: ad.probability,
     }
 
-  const decode = ad.encrypted ? MESSAGE_DECODERS[ad.encrypted] : null
-  if (!decode) {
+  const decoder = ad.encrypted ? ADS_DECODERS[ad.encrypted] : null
+  if (!decoder) {
     return {
       decryptedMessage: null,
       decryptedProbability: null,
@@ -23,8 +21,8 @@ export const decryptMessage = (
 
   try {
     return {
-      decryptedMessage: decode(ad.message),
-      decryptedProbability: decode(ad.probability),
+      decryptedMessage: decoder(ad.message),
+      decryptedProbability: decoder(ad.probability),
     }
   } catch {
     return {
@@ -50,11 +48,11 @@ const evalDifficulty = (probability: string): number | null => {
 
 // general formula for risk assess
 // risk =  b * difficultyLevel + (encrypted ? c : 0)
-export const assessRisk = (message: Message): RiskAssessment => {
-  const isEncrypted = !!message.encrypted
-  const decryptResult = decryptMessage(message)
+export const assessRisk = (ad: Ad): RiskAssessment => {
+  const isEncrypted = !!ad.encrypted
+  const decryptResult = decodeAd(ad)
 
-  const probability = decryptResult.decryptedProbability ?? message.probability
+  const probability = decryptResult.decryptedProbability ?? ad.probability
   const rawDifficulty = evalDifficulty(probability)
   const difficultyLevel = rawDifficulty ?? MAX_DIFFICULTY // unknown = max risk
 

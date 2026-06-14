@@ -1,9 +1,9 @@
 import { axiosToApiError, responseToApiError } from '@/api/errors'
-import { getMessages, postSolveMessage } from '@/api/messages'
+import { getAds, postSolveAd } from '@/api/ads'
 
-export const fetchMessagesService = async (gameId: string) => {
+export const fetchAdsService = async (gameId: string) => {
   try {
-    const response = await getMessages(gameId)
+    const response = await getAds(gameId)
     if (!response.data) throw responseToApiError(response)
     return response.data
   } catch (error) {
@@ -11,9 +11,9 @@ export const fetchMessagesService = async (gameId: string) => {
   }
 }
 
-export const solveMessageService = async (gameId: string, messageId: string) => {
+export const solveAdService = async (gameId: string, adId: string) => {
   try {
-    const response = await postSolveMessage(gameId, messageId)
+    const response = await postSolveAd(gameId, adId)
     if (!response.data) throw responseToApiError(response)
     return response.data
   } catch (error) {

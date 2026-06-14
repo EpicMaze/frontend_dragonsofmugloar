@@ -1,25 +1,25 @@
-import type { ApiError, Message } from '@/api/types'
-import { fetchMessagesService, solveMessageService } from '@/service/messages'
+import type { Ad, ApiError } from '@/api/types'
+import { fetchAdsService, solveAdService } from '@/service/ads'
 import { useGameStore } from '@/stores/game'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { computed, ref, toValue, type MaybeRefOrGetter } from 'vue'
 
-export const messagesQueryKey = (gameId: string) => ['messages', gameId] as const
+export const adsQueryKey = (gameId: string) => ['ads', gameId] as const
 
-export const useMessages = (gameId: MaybeRefOrGetter<string>) => {
-  const queryKey = computed(() => messagesQueryKey(toValue(gameId)))
+export const useAds = (gameId: MaybeRefOrGetter<string>) => {
+  const queryKey = computed(() => adsQueryKey(toValue(gameId)))
   const queryClient = useQueryClient()
   const store = useGameStore()
 
   const fetchTurn = ref<number | null>(null)
 
-  const messagesQuery = useQuery({
+  const adsQuery = useQuery({
     queryKey,
     queryFn: async () => {
-      const messages = await fetchMessagesService(toValue(gameId))
+      const ads = await fetchAdsService(toValue(gameId))
 
       fetchTurn.value = store.gameTurn
-      return messages
+      return ads
     },
     enabled: computed(() => !!toValue(gameId) && store.isGameActive),
     staleTime: Infinity,
@@ -27,26 +27,26 @@ export const useMessages = (gameId: MaybeRefOrGetter<string>) => {
   })
 
   const solveMutation = useMutation<
-    Awaited<ReturnType<typeof solveMessageService>>,
+    Awaited<ReturnType<typeof solveAdService>>,
     ApiError,
     string,
-    { previousMessages?: Message[] }
+    { previousAds?: Ad[] }
   >({
-    mutationFn: (messageId: string) => solveMessageService(toValue(gameId), messageId),
-    onMutate: async (messageId: string) => {
+    mutationFn: (adId: string) => solveAdService(toValue(gameId), adId),
+    onMutate: async (adId: string) => {
       // cancel ongoing queries
       await queryClient.cancelQueries({ queryKey: queryKey.value })
 
       // take snapshot
-      const previousMessages = queryClient.getQueryData<Message[]>(queryKey.value)
+      const previousAds = queryClient.getQueryData<Ad[]>(queryKey.value)
 
       // optimistic update -> remove message from cached object
-      queryClient.setQueryData<Message[]>(queryKey.value, (old) => {
+      queryClient.setQueryData<Ad[]>(queryKey.value, (old) => {
         if (!old) return old
-        return old.filter((msg) => msg.adId !== messageId)
+        return old.filter((msg) => msg.adId !== adId)
       })
 
-      return { previousMessages }
+      return { previousAds }
     },
     onSuccess: (result) => {
       const updatedStats = {
@@ -66,7 +66,7 @@ export const useMessages = (gameId: MaybeRefOrGetter<string>) => {
       // invalidate reputation -> refetch
       queryClient.invalidateQueries({ queryKey: ['reputation', gameId] })
     },
-    onError: (error, _messageId, context) => {
+    onError: (error, _adId, context) => {
       // if you can't beat them join them (c) Sun Tzu probably
       if (error.status === 400) return
       // rollback
@@ -77,14 +77,14 @@ export const useMessages = (gameId: MaybeRefOrGetter<string>) => {
     },
   })
 
-  const refetchMessages = () => {
+  const refetchAds = () => {
     queryClient.invalidateQueries({ queryKey: queryKey.value })
   }
 
   return {
-    messagesQuery,
+    adsQuery,
     solveMutation,
-    refetchMessages,
+    refetchAds,
     fetchTurn,
   }
 }

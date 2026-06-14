@@ -1,13 +1,13 @@
 import { useActionModal } from './useActionModal'
-import type { useMessages } from './useMessages'
-import type { SolveMessageResponse, ApiError } from '@/api/types'
+import type { useAds } from './useAds'
+import type { SolveAdResponse, ApiError } from '@/api/types'
 
-type SolveMutation = ReturnType<typeof useMessages>['solveMutation']
+type SolveMutation = ReturnType<typeof useAds>['solveMutation']
 
 export const useSolveModal = (solveMutation: SolveMutation) => {
-  const modal = useActionModal<SolveMessageResponse>()
+  const modal = useActionModal<SolveAdResponse>()
 
-  const solveMessage = (adId: string) => {
+  const solveAd = (adId: string) => {
     modal.handleOpen()
     solveMutation.mutate(adId, {
       onSuccess: (result) => {
@@ -24,7 +24,7 @@ export const useSolveModal = (solveMutation: SolveMutation) => {
   }
 
   return {
-    solveMessage,
+    solveAd,
     isPending: solveMutation.isPending,
     isOpen: modal.isOpen,
     handleOpenChange: modal.handleOpenChange,
