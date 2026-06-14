@@ -19,7 +19,7 @@ describe('useReputation', () => {
     let store: ReturnType<typeof useGameStore>
     mountComposable(() => {
       store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useReputation('game-1')
     })
     await flushPromises()

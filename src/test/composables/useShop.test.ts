@@ -24,7 +24,7 @@ describe('useShop', () => {
       wrapper: { shopQuery },
     } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useShop('game-1')
     })
     await flushPromises()
@@ -45,7 +45,7 @@ describe('useShop', () => {
       pinia,
     } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useShop('game-1')
     })
     await flushPromises()
@@ -75,7 +75,7 @@ describe('useShop', () => {
       pinia,
     } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useShop('game-1')
     })
     await flushPromises()
@@ -98,7 +98,7 @@ describe('useShop', () => {
       wrapper: { shopQuery, purchaseMutation },
     } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useShop('game-1')
     })
     await flushPromises()

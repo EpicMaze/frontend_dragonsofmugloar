@@ -24,7 +24,7 @@ describe('useAds', () => {
       wrapper: { adsQuery },
     } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useAds('game-1')
     })
     await flushPromises()
@@ -44,7 +44,7 @@ describe('useAds', () => {
       wrapper: { fetchTurn },
     } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame({ ...mockGame, turn: 4 })
+      store.$patch({ game: { ...mockGame, turn: 4 } })
       return useAds('game-1')
     })
     await flushPromises()
@@ -56,7 +56,7 @@ describe('useAds', () => {
       wrapper: { adsQuery, solveMutation },
     } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useAds('game-1')
     })
     await flushPromises()
@@ -89,7 +89,7 @@ describe('useAds', () => {
       pinia,
     } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useAds('game-1')
     })
     await flushPromises()
@@ -121,7 +121,7 @@ describe('useAds', () => {
       pinia,
     } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useAds('game-1')
     })
     await flushPromises()
@@ -144,7 +144,7 @@ describe('useAds', () => {
       wrapper: { adsQuery, solveMutation },
     } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useAds('game-1')
     })
     await flushPromises()
@@ -165,7 +165,7 @@ describe('useAds', () => {
       wrapper: { adsQuery, solveMutation },
     } = mountComposable(() => {
       const store = useGameStore()
-      store.setGame(mockGame)
+      store.$patch({ game: mockGame })
       return useAds('game-1')
     })
     await flushPromises()
