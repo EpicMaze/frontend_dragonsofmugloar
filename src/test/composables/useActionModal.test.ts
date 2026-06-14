@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { mountComposable } from '../createWrapper'
+import { mountComposable } from '../wrappers'
 import { useActionModal } from '@/composables/useActionModal'
 
 describe('useActionModal', () => {

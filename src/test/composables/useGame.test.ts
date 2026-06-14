@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
-import { mountComposable } from '../createWrapper'
+import { mountComposable } from '../wrappers'
 import { useGame } from '@/composables/useGame'
 import { useGameStore } from '@/stores/game'
 import { http, HttpResponse } from 'msw'

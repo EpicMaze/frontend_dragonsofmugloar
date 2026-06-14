@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import { http, HttpResponse } from 'msw'
-import { mountComposable } from '../createWrapper'
+import { mountComposable } from '../wrappers'
 import { useAds } from '@/composables/useAds'
 import { useGameStore } from '@/stores/game'
 import { server } from '../server'

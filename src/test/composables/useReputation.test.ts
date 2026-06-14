@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
-import { mountComposable } from '../createWrapper'
+import { mountComposable } from '../wrappers'
 import { useReputation } from '@/composables/useReputation'
 import { useGameStore } from '@/stores/game'
 

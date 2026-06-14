@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { ref } from 'vue'
-import { mountComposable } from '../createWrapper'
+import { mountComposable } from '../wrappers'
 import { useSolveModal } from '@/composables/useSolveModal'
 import type { ApiError, SolveAdResponse } from '@/api/types'
 

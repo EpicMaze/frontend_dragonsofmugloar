@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { ref } from 'vue'
-import { mountComposable } from '../createWrapper'
+import { mountComposable } from '../wrappers'
 import { usePurchaseModal } from '@/composables/usePurchaseModal'
 import type { PurchaseItemResponse } from '@/api/types'
 
