@@ -64,14 +64,14 @@ export const useAds = (gameId: MaybeRefOrGetter<string>) => {
       }
 
       // invalidate reputation -> refetch
-      queryClient.invalidateQueries({ queryKey: ['reputation', gameId] })
+      queryClient.invalidateQueries({ queryKey: ['reputation', toValue(gameId)] })
     },
     onError: (error, _adId, context) => {
       // if you can't beat them join them (c) Sun Tzu probably
       if (error.status === 400) return
       // rollback
       if (context) {
-        queryClient.setQueryData(queryKey.value, context)
+        queryClient.setQueryData(queryKey.value, context.previousAds)
       }
       console.error('SolveMessageResponse', error)
     },

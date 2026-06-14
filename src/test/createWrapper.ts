@@ -3,7 +3,7 @@ import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { mount, type MountingOptions } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { routes } from '@/router'
-import type { Component } from 'vue'
+import { defineComponent, type Component } from 'vue'
 
 // fresh query per test so no cache shenanigans
 function createTestQueryClient() {
@@ -38,4 +38,29 @@ export function createWrapper(component: Component, options: MountingOptions<unk
 // if composables need exposed query client
 export function createTestQueryClientWrapper() {
   return createTestQueryClient()
+}
+
+export function mountComposable<T>(composable: () => T) {
+  let result: T
+  const TestComponent = defineComponent({
+    setup() {
+      result = composable()
+      return () => null
+    },
+  })
+
+  const pinia = createTestingPinia({ stubActions: false })
+  const queryClient = createTestQueryClient()
+  const router = createRouter({
+    history: createMemoryHistory(),
+    routes,
+  })
+
+  mount(TestComponent, {
+    global: {
+      plugins: [pinia, [VueQueryPlugin, { queryClient }], router],
+    },
+  })
+
+  return [result!, router] as const
 }
