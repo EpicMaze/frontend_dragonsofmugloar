@@ -1,4 +1,5 @@
 import type { ApiError, Game } from '@/api/types'
+import { notify } from '@/lib/notify'
 import { startGameService } from '@/service/game'
 import { useGameStore } from '@/stores/game'
 import { useMutation } from '@tanstack/vue-query'
@@ -16,7 +17,7 @@ export const useGame = () => {
       router.push('/play')
     },
     onError: (error: ApiError) => {
-      console.error('useStartGame', error)
+      notify.error('Failed to start game!', error.message)
     },
   })
 

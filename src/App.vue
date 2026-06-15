@@ -3,6 +3,7 @@
   import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
   import { useGameStore } from './stores/game'
   import { watch } from 'vue'
+  import { Toaster } from 'vue-sonner'
 
   const router = useRouter()
   const store = useGameStore()
@@ -16,6 +17,7 @@
 </script>
 
 <template>
+  <Toaster position="top-center" />
   <RouterView />
   <VueQueryDevtools />
 </template>

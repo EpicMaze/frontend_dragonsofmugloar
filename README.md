@@ -1,54 +1,131 @@
-# temp
+# Dragons of Mugloar
 
-This template should help get you started developing with Vue 3 in Vite.
+A web application built for tech evaluation project, using [Dragons of Mugloar API](https://www.dragonsofmugloar.com/).
 
-## Recommended IDE Setup
+## Stack
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- **Vue 3** with Composition API and TypeScript
+- **Pinia**: state management with persistence
+- **TanStack Query**: server state, caching, optimistic updates
+- **Vue Router**: client-side routing with route guards
+- **Tailwind CSS v4**: styling and UI components (vue-sonner for toasts)
+- **Vitest** and Vue Test Utils: unit testing
+- **oxlint** and **ESLint**: dual linting (oxlint for speed, ESLint for Vue/TS rules)
+- **Husky** and **lint-staged**: pre-commit hooks
+- **Prettier**: code formatting
+- **Vite**: build tooling
 
-## Recommended Browser Setup
+## Features
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+- Start and continue game sessions with persistent state for page refreshes.
+- Browse and solve messages from the ad board.
+- Purchase items from the shop.
+- Track score, gold, lives, level and turn in real time.
+- **Turns remaining indicator**: calculates remaining turns before a message expires client-side using `fetchTurn + expiresIn - currentTurn` formula.
+- **Message Risk Analysis**: evaluates each message solve probability based on difficulty and encryption. Provides a risk score (SAFE -> CRITICAL) with breakdown tooltip.
+- **Ad Decryption**: decodes encrypted message in-place with toggle.
+- Game over handling for both session expiry and lives lost, with final stats display.
 
-## Type Support for `.vue` Imports in TS
+## Getting Started
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+### Prerequisites
 
-## Customize configuration
+- Node.js `^20.19.0` or `>=22.12.0`
+- npm `10` or later
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+### Installation
 
-## Project Setup
-
-```sh
+```bash
+git clone <repo>
+cd frontend_dragonsofmugloar
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### Environment
 
-```sh
+Copy example `.env` files from project root:
+
+```bash
+cp .env.example .env
+cp .env.test.example .env.test
+```
+
+### Running the app
+
+```bash
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+Open [http://localhost:5173](http://localhost:5173)
 
-```sh
+### Running tests
+
+```bash
+npm run test
+```
+
+### Building for production
+
+```bash
 npm run build
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+### CI Validation
 
-```sh
-npm run test:unit
+Run the full validation pipeline locally:
+
+```bash
+npm run ci
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+This runs type checking, linting, tests and build in sequence.
 
-```sh
-npm run lint
+## Development
+
+### Pre-commit hooks
+
+The project uses Husky + lint-staged for pre-commit validation:
+
+- Prettier formats staged files
+- ESLint fixes staged files
+- TypeScript type check runs on commit
+
+Hooks are installed automatically after `npm install` via the `prepare` script.
+
+## Project Structure
+
+```bash
+src
+├───api
+├───components
+│   └───game
+├───composables
+├───lib
+├───router
+├───service
+├───stores
+├───test
+│   ├───api
+│   ├───components
+│   ├───composables
+│   ├───integration
+│   ├───stores
+│   ├───utils
+│   └───views
+└───views
 ```
+
+## Architecture Notes
+
+- **Domain naming**: API messages are modeled as `Ad` internally, matching the `adId` identifier used throughout the API, while UI layer uses "messages" and "tasks" for player clarity.
+- **Optimistic updates**: ads are removed from the UI immediately on solve attempt, regarding the result, and on 400 errors.
+  - `result.success = true | false` on solving treated as done task and no need for it to remain UI.
+  - `400` on solving treated as message expiry (contractor left) for game mechanics, not a generic error. Assumption is made that `400` throw happens when message would have been expired by the time of solve attempt or during.
+  - other errors on solving treated as network issues, triggering rollback.
+- **Global error handling**: 410 (game lost) and 404 (session expired) are caught globally in TanStack Query cache handlers and trigger game-over flow.
+- **Persistent state**: game session, reputation and game-over state survive page refresh via Pinia persistence plugin.
+
+## Notes
+
+- Mobile: fully functional on mobile devices. Desktop layout recommended for optimal experience.
+- Originally prototyped in React, Redux Toolkit, React Query, and later ported to Vue 3 as part of the evaluation. React version available on request.

@@ -1,4 +1,5 @@
 import type { Ad, ApiError } from '@/api/types'
+import { notify } from '@/lib/notify'
 import { fetchAdsService, solveAdService } from '@/service/ads'
 import { useGameStore } from '@/stores/game'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
@@ -73,7 +74,7 @@ export const useAds = (gameId: MaybeRefOrGetter<string>) => {
       if (context) {
         queryClient.setQueryData(queryKey.value, context.previousAds)
       }
-      console.error('SolveMessageResponse', error)
+      notify.error('Failed to solve message!', error.message)
     },
   })
 
