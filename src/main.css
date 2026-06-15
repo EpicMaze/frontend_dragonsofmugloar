@@ -1,3 +1,7 @@
+html {
+  scrollbar-gutter: stable;
+}
+
 .custom-notify {
   color: white !important;
 }

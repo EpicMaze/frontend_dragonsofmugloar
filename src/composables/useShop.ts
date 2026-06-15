@@ -3,14 +3,25 @@ import { notify } from '@/lib/notify'
 import { fetchShopItemsService, purchaseItemService } from '@/service/shop'
 import { useGameStore } from '@/stores/game'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { computed, toValue, type MaybeRefOrGetter } from 'vue'
+import { computed, ref, toValue, type MaybeRefOrGetter } from 'vue'
 
+interface ShopStatsSnapShot {
+  gold: number
+  level: number
+}
+
+export interface PurchaseStatsDiff {
+  gold: number
+  level: number
+}
 export const shopQueryKey = (gameId: string) => ['shopItems', gameId] as const
 
 export const useShop = (gameId: MaybeRefOrGetter<string>) => {
   const queryKey = computed(() => shopQueryKey(toValue(gameId)))
   const store = useGameStore()
   const queryClient = useQueryClient()
+
+  const purchaseDiff = ref<PurchaseStatsDiff | null>(null)
 
   const shopQuery = useQuery({
     queryKey,
@@ -24,7 +35,7 @@ export const useShop = (gameId: MaybeRefOrGetter<string>) => {
     Awaited<ReturnType<typeof purchaseItemService>>,
     ApiError,
     string,
-    { prevShopItems?: ShopItem[] }
+    { prevShopItems?: ShopItem[]; prevStats?: ShopStatsSnapShot }
   >({
     mutationFn: (itemId: string) => {
       return purchaseItemService(toValue(gameId), itemId)
@@ -36,9 +47,16 @@ export const useShop = (gameId: MaybeRefOrGetter<string>) => {
       // take snapshot
       const prevShopItems = queryClient.getQueryData<ShopItem[]>(queryKey.value)
 
-      return { prevShopItems }
+      const prevStats = store.game
+        ? {
+            gold: store.game.gold,
+            level: store.game.level,
+          }
+        : undefined
+
+      return { prevShopItems, prevStats }
     },
-    onSuccess: (result) => {
+    onSuccess: (result, _itemId, context) => {
       const updatedStats = {
         gold: result.gold,
         lives: result.lives,
@@ -51,6 +69,13 @@ export const useShop = (gameId: MaybeRefOrGetter<string>) => {
         store.setGameOver('lost')
         return
       }
+
+      purchaseDiff.value = context?.prevStats
+        ? {
+            gold: result.gold - context.prevStats.gold,
+            level: result.level - context.prevStats.level,
+          }
+        : null
     },
     onError: (error: ApiError, _, context) => {
       // rollback
@@ -64,5 +89,6 @@ export const useShop = (gameId: MaybeRefOrGetter<string>) => {
   return {
     shopQuery,
     purchaseMutation,
+    purchaseDiff,
   }
 }

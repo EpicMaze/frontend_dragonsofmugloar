@@ -10,9 +10,11 @@
   const store = useGameStore()
   const { gameId } = storeToRefs(store)
 
-  const { shopQuery, purchaseMutation } = useShop(computed(() => gameId.value ?? ''))
-  const { purchaseItem, isPending, isOpen, handleOpenChange, result } =
-    usePurchaseModal(purchaseMutation)
+  const { shopQuery, purchaseMutation, purchaseDiff } = useShop(computed(() => gameId.value ?? ''))
+  const { purchaseItem, isPending, isOpen, handleOpenChange, result } = usePurchaseModal(
+    purchaseMutation,
+    purchaseDiff,
+  )
 
   const items = computed(() => shopQuery.data.value ?? [])
 </script>
@@ -21,7 +23,7 @@
   <div class="space-y-4">
     <PurchaseModal
       :open="isOpen"
-      :result="result"
+      :content="result"
       :loading="isPending"
       @update:open="handleOpenChange"
     />

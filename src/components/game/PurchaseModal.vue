@@ -1,9 +1,15 @@
 <script setup lang="ts">
   import type { PurchaseItemResponse } from '@/api/types'
+  import type { PurchaseStatsDiff } from '@/composables/useShop'
+
+  export interface PurchaseModalContent {
+    result: PurchaseItemResponse
+    diff: PurchaseStatsDiff | null
+  }
 
   defineProps<{
     open: boolean
-    result: PurchaseItemResponse | null
+    content: PurchaseModalContent | null
     loading: boolean
   }>()
 
@@ -29,28 +35,28 @@
         </div>
 
         <template v-else>
-          <h2 class="text-lg font-semibold text-slate-900">
-            {{ result?.shoppingSuccess ? '✅ Item bought!' : '❌ Failed to buy item' }}
+          <h2
+            :class="[
+              'text-lg font-semibold',
+              {
+                'text-green-700': content?.result.shoppingSuccess,
+                'text-red-700': !content?.result.shoppingSuccess,
+              },
+            ]"
+          >
+            {{ content?.result.shoppingSuccess ? 'Purchase completed!' : 'Failed to buy item' }}
           </h2>
 
           <div
             class="mt-4 grid grid-cols-2 gap-3 rounded-3xl border border-slate-200 bg-slate-50 p-4 text-sm"
           >
             <div>
-              <p class="text-xs uppercase tracking-wide text-slate-500">Lives</p>
-              <p class="mt-1 font-medium text-slate-900">{{ result?.lives ?? '—' }}</p>
+              <p class="text-xs uppercase tracking-wide text-slate-500">Gold:</p>
+              <p class="mt-1 font-medium text-yellow-600">{{ content?.diff?.gold }}</p>
             </div>
             <div>
-              <p class="text-xs uppercase tracking-wide text-slate-500">Gold</p>
-              <p class="mt-1 font-medium text-slate-900">{{ result?.gold ?? '—' }}</p>
-            </div>
-            <div>
-              <p class="text-xs uppercase tracking-wide text-slate-500">Level</p>
-              <p class="mt-1 font-medium text-slate-900">{{ result?.level ?? '—' }}</p>
-            </div>
-            <div>
-              <p class="text-xs uppercase tracking-wide text-slate-500">Turn</p>
-              <p class="mt-1 font-medium text-slate-900">{{ result?.turn ?? '—' }}</p>
+              <p class="text-xs uppercase tracking-wide text-slate-500">Dragon Level:</p>
+              <p class="mt-1 font-medium text-purple-600">+{{ content?.diff?.level }}</p>
             </div>
           </div>
 

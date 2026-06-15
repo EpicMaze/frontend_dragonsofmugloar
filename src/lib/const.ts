@@ -19,6 +19,7 @@ export const DIFFICULTIES = {
   PLAYING_WITH_FIRE: 'Playing with fire',
   RATHER_DETRIMENTAL: 'Rather detrimental',
   SUICIDE_MISSION: 'Suicide mission',
+  IMPOSSIBLE: 'Impossible',
 } as const
 
 const DIFFICULTY_ORDER = [
@@ -32,6 +33,7 @@ const DIFFICULTY_ORDER = [
   DIFFICULTIES.PLAYING_WITH_FIRE,
   DIFFICULTIES.RATHER_DETRIMENTAL,
   DIFFICULTIES.SUICIDE_MISSION,
+  DIFFICULTIES.IMPOSSIBLE,
 ] satisfies string[]
 
 export const DIFFICULTY_LEVELS = Object.fromEntries(

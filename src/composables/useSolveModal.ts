@@ -1,17 +1,22 @@
+import type { Ref } from 'vue'
 import { useActionModal } from './useActionModal'
-import type { useAds } from './useAds'
-import type { SolveAdResponse, ApiError } from '@/api/types'
+import type { SolveStatsDiff, useAds } from './useAds'
+import type { ApiError } from '@/api/types'
+import type { SolveModalContent } from '@/components/game/SolveModal.vue'
 
 type SolveMutation = ReturnType<typeof useAds>['solveMutation']
 
-export const useSolveModal = (solveMutation: SolveMutation) => {
-  const modal = useActionModal<SolveAdResponse>()
+export const useSolveModal = (
+  solveMutation: SolveMutation,
+  solveDiff: Ref<SolveStatsDiff | null>,
+) => {
+  const modal = useActionModal<SolveModalContent>()
 
   const solveAd = (adId: string) => {
     modal.handleOpen()
     solveMutation.mutate(adId, {
       onSuccess: (result) => {
-        modal.setContent(result)
+        modal.setContent({ result, diff: solveDiff.value })
       },
       onError: (error: ApiError) => {
         if (error.status === 400) {
