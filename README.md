@@ -96,23 +96,16 @@ Hooks are installed automatically after `npm install` via the `prepare` script.
 
 ```bash
 src
-├───api
-├───components
-│   └───game
-├───composables
-├───lib
-├───router
-├───service
-├───stores
-├───test
-│   ├───api
-│   ├───components
-│   ├───composables
-│   ├───integration
-│   ├───stores
-│   ├───utils
-│   └───views
-└───views
+├───api # raw API calls, error utils, api specific types
+├───components # app components
+├───composables # Vue composables (query, mutations, modal state)
+├───lib # utils, consts, types related
+├───router # router definitions, rules
+├───service # Error conversion
+├───stores # Pinia store
+├───test # tests, organized in a way to mimick project structure
+├───types # domain and util types
+└───views # route level views
 ```
 
 ## Architecture Notes
