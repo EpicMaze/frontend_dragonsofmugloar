@@ -8,7 +8,7 @@ A web application built for tech evaluation project, using [Dragons of Mugloar A
 - **Pinia**: state management with persistence
 - **TanStack Query**: server state, caching, optimistic updates
 - **Vue Router**: client-side routing with route guards
-- **Tailwind CSS v4** and shadcn-vue: styling and UI components
+- **Tailwind CSS v4**: styling and UI components (vue-sonner for toasts)
 - **Vitest** and Vue Test Utils: unit testing
 - **oxlint** and **ESLint**: dual linting (oxlint for speed, ESLint for Vue/TS rules)
 - **Husky** and **lint-staged**: pre-commit hooks
@@ -128,4 +128,4 @@ src
 ## Notes
 
 - Mobile: fully functional on mobile devices. Desktop layout recommended for optimal experience.
-- Originally prototyped in React, Redux Toolkit, React Query, ported to Vue 3 as part of the evaluation. React version available on request.
+- Originally prototyped in React, Redux Toolkit, React Query, and later ported to Vue 3 as part of the evaluation. React version available on request.
