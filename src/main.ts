@@ -5,6 +5,8 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { createQueryClient } from '@/lib/queryClient'
 import App from './App.vue'
 import './assets/main.css'
+import 'vue-sonner/style.css'
+import '@/main.css'
 import { createAppRouter } from './router/index.ts'
 
 const app = createApp(App)

@@ -1,4 +1,5 @@
 import type { ApiError, ShopItem } from '@/api/types'
+import { notify } from '@/lib/notify'
 import { fetchShopItemsService, purchaseItemService } from '@/service/shop'
 import { useGameStore } from '@/stores/game'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
@@ -38,8 +39,6 @@ export const useShop = (gameId: MaybeRefOrGetter<string>) => {
       return { prevShopItems }
     },
     onSuccess: (result) => {
-      console.log('PurchaseItemResponse', result)
-
       const updatedStats = {
         gold: result.gold,
         lives: result.lives,
@@ -58,7 +57,7 @@ export const useShop = (gameId: MaybeRefOrGetter<string>) => {
       if (context?.prevShopItems) {
         queryClient.setQueryData(queryKey.value, context.prevShopItems)
       }
-      console.error('PurchaseItemResponse', error)
+      notify.error('Failed to purchase an item!', error.message)
     },
   })
 

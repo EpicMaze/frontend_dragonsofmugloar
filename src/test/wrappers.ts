@@ -5,7 +5,6 @@ import { createAppRouter, eagerRoutes } from '@/router'
 import { defineComponent, type Component } from 'vue'
 import { createMemoryHistory } from 'vue-router'
 
-// fresh query per test so no cache shenanigans
 const createTestQueryClient = () => {
   return new QueryClient({
     defaultOptions: {

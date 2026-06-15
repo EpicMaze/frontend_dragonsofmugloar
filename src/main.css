@@ -1,0 +1,15 @@
+.custom-notify {
+  color: white !important;
+}
+
+.custom-notify [data-description] {
+  color: white !important;
+}
+
+.custom-notify-error {
+  background-color: #f51b0b !important;
+}
+
+.custom-notify-warning {
+  background-color: #f59e0b !important;
+}
