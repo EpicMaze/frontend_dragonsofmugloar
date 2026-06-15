@@ -36,7 +36,7 @@ A web application built for tech evaluation project, using [Dragons of Mugloar A
 ### Installation
 
 ```bash
-git clone <repo>
+git clone https://github.com/EpicMaze/frontend_dragonsofmugloar.git
 cd frontend_dragonsofmugloar
 npm install
 ```
