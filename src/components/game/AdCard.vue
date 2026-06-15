@@ -50,7 +50,7 @@
   >
     <div class="mb-3 flex items-center justify-between">
       <span class="text-xs font-medium" :class="turnsClass">
-        {{ turnsRemaining <= 0 ? `Expired (${turnsRemaining})` : `${turnsRemaining} turns left` }}
+        {{ turnsRemaining <= 0 ? `Expired` : `${turnsRemaining} turns left` }}
       </span>
       <AdRiskLabel :score="risk.score" :break-down="risk.breakdown" :notes="risk.notes" />
     </div>
@@ -58,7 +58,7 @@
     <div class="flex-1 space-y-3">
       <div>
         <div class="flex items-center justify-between">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Task</p>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Task:</p>
           <button
             v-if="ad.encrypted"
             class="text-xs font-medium text-blue-500 hover:text-blue-700"
@@ -68,30 +68,13 @@
           </button>
         </div>
         <p class="mt-1 text-sm font-medium text-slate-900 break-words">{{ display.text }}</p>
-        <p v-if="ad.encrypted && !isDecrypted" class="mt-1 text-xs text-slate-400">
-          {{ ad.encrypted === 1 ? 'Base64 encoded' : 'ROT13 encoded' }}
-        </p>
+        <p v-if="ad.encrypted && !isDecrypted" class="mt-1 text-xs text-slate-400">Encoded</p>
       </div>
 
       <div class="grid grid-cols-2 gap-3 text-sm">
         <div>
-          <p class="text-xs text-slate-500">Probability</p>
-          <p class="font-medium text-slate-700 break-words">{{ display.probability }}</p>
-        </div>
-        <div>
-          <p class="text-xs text-slate-500">Reward</p>
-          <p class="font-medium text-slate-700">{{ ad.reward }}</p>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-3 text-sm">
-        <div>
-          <p class="text-xs text-slate-500">Expires</p>
-          <p class="font-medium text-slate-700">{{ ad.expiresIn }}</p>
-        </div>
-        <div>
-          <p class="text-xs text-slate-500">Encryption</p>
-          <p class="font-medium text-slate-700">{{ ad.encrypted ?? 'None' }}</p>
+          <p class="text-xs text-slate-500">Reward:</p>
+          <p class="font-medium text-slate-700">{{ ad.reward }} gold</p>
         </div>
       </div>
     </div>

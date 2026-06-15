@@ -16,8 +16,8 @@
           :key="key"
           class="flex items-center justify-between"
         >
-          <span class="text-slate-600">{{ key }}</span>
-          <span class="font-medium text-slate-900">{{ value }}</span>
+          <span class="text-slate-600 capitalize">{{ key }}</span>
+          <span class="font-medium text-slate-900">{{ value.toFixed(1) }}</span>
         </div>
       </template>
 

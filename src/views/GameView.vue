@@ -24,7 +24,7 @@
   <div class="mx-auto max-w-7xl px-4 py-6">
     <div class="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)_320px]">
       <!-- LEFT: Controls -->
-      <aside class="space-y-4">
+      <aside class="space-y-4 order-2 lg:order-1">
         <button
           class="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50"
           @click="router.push('/')"
@@ -44,7 +44,7 @@
               ]"
               @click="currentView = 'ads'"
             >
-              Ads
+              Tasks
             </button>
             <button
               :class="[
@@ -62,13 +62,13 @@
       </aside>
 
       <!-- CENTER: Main Viewport -->
-      <main class="space-y-4">
+      <main class="space-y-4 order-3 lg:order-2">
         <AdList v-if="currentView === 'ads'" />
         <ShopPanel v-if="currentView === 'shop'" />
       </main>
 
       <!-- RIGHT: Stats & Reputation -->
-      <aside class="space-y-4">
+      <aside class="space-y-4 order-1 lg:order-3">
         <GameStats />
         <ReputationStats />
       </aside>
