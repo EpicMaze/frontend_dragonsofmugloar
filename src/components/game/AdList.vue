@@ -23,8 +23,7 @@
   <div class="space-y-4">
     <SolveModal
       :open="isOpen"
-      :result="result"
-      :solve-diff="solveDiff"
+      :content="result"
       :expired="expired"
       :loading="isPending"
       @update:open="handleOpenChange"

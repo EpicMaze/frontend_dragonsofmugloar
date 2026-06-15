@@ -13,7 +13,7 @@ const makeMockMutation = (overrides = {}) => ({
 describe('usePurchaseModal', () => {
   it('purchaseItem opens modal immediately', () => {
     const mutation = makeMockMutation()
-    const { wrapper } = mountComposable(() => usePurchaseModal(mutation as never))
+    const { wrapper } = mountComposable(() => usePurchaseModal(mutation as never, ref(null)))
     wrapper.purchaseItem('item-1')
     expect(wrapper.isOpen.value).toBe(true)
   })
@@ -29,7 +29,7 @@ describe('usePurchaseModal', () => {
     const mutation = makeMockMutation({
       mutate: vi.fn((_itemId, callbacks) => callbacks.onSuccess(result)),
     })
-    const { wrapper } = mountComposable(() => usePurchaseModal(mutation as never))
+    const { wrapper } = mountComposable(() => usePurchaseModal(mutation as never, ref(null)))
     wrapper.purchaseItem('item-1')
     expect(wrapper.result.value).toEqual(result)
     expect(wrapper.isOpen.value).toBe(true)
@@ -39,7 +39,7 @@ describe('usePurchaseModal', () => {
     const mutation = makeMockMutation({
       mutate: vi.fn((_itemId, callbacks) => callbacks.onError({ status: 500, message: 'error' })),
     })
-    const { wrapper } = mountComposable(() => usePurchaseModal(mutation as never))
+    const { wrapper } = mountComposable(() => usePurchaseModal(mutation as never, ref(null)))
     wrapper.purchaseItem('item-1')
     expect(wrapper.isOpen.value).toBe(false)
   })
@@ -47,13 +47,13 @@ describe('usePurchaseModal', () => {
   it('exposes isPending from mutation', () => {
     const isPending = ref(true)
     const mutation = makeMockMutation({ isPending })
-    const { wrapper } = mountComposable(() => usePurchaseModal(mutation as never))
+    const { wrapper } = mountComposable(() => usePurchaseModal(mutation as never, ref(null)))
     expect(wrapper.isPending.value).toBe(true)
   })
 
   it('has no expired state', () => {
     const mutation = makeMockMutation()
-    const { wrapper } = mountComposable(() => usePurchaseModal(mutation as never))
+    const { wrapper } = mountComposable(() => usePurchaseModal(mutation as never, ref(null)))
     expect('expired' in wrapper).toBe(false)
   })
 })

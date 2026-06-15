@@ -1,11 +1,13 @@
 <script setup lang="ts">
   import type { SolveAdResponse } from '@/api/types'
   import type { SolveStatsDiff } from '@/composables/useAds'
-
+  export interface SolveModalContent {
+    result: SolveAdResponse
+    diff: SolveStatsDiff | null
+  }
   defineProps<{
     open: boolean
-    result: SolveAdResponse | null
-    solveDiff: SolveStatsDiff | null
+    content: SolveModalContent | null
     expired: boolean
     loading: boolean
   }>()
@@ -49,38 +51,42 @@
         </template>
 
         <!-- Result -->
-        <template v-else-if="result">
+        <template v-else-if="content?.result">
           <h2
             :class="[
               'text-lg font-semibold',
-              { 'text-green-700': result.success, 'text-red-700': !result.success },
+              { 'text-green-700': content.result.success, 'text-red-700': !content.result.success },
             ]"
           >
-            {{ result.success ? 'Task solved succesfully!' : 'You failed to solve the task!' }}
+            {{
+              content.result.success ? 'Task solved succesfully!' : 'You failed to solve the task!'
+            }}
           </h2>
           <div
             :class="[
               'mt-4 grid grid-cols-3 gap-3 rounded-3xl border p-4 text-sm text-slate-700',
               {
-                'border-green-200 bg-green-50': result.success,
-                'border-red-200 bg-red-50': !result.success,
+                'border-green-200 bg-green-50': content.result.success,
+                'border-red-200 bg-red-50': !content.result.success,
               },
             ]"
           >
             <div>
               <p class="'text-xs capitalized tracking-wide text-slate-500">
                 {{
-                  result.success ? 'You live for another day' : 'You lost a live, carefull buddy'
+                  content.result.success
+                    ? 'You live for another day'
+                    : 'You lost a live, carefull buddy'
                 }}
               </p>
             </div>
             <div>
               <p class="text-xs uppercase tracking-wide text-slate-500">Gold:</p>
-              <p class="mt-1 font-medium text-yellow-600">+{{ solveDiff?.gold ?? 0 }}</p>
+              <p class="mt-1 font-medium text-yellow-600">+{{ content.diff?.gold ?? 0 }}</p>
             </div>
             <div>
               <p class="text-xs uppercase tracking-wide text-slate-500">Score:</p>
-              <p class="mt-1 font-medium text-slate-900">+{{ solveDiff?.score ?? 0 }}</p>
+              <p class="mt-1 font-medium text-slate-900">+{{ content.diff?.score ?? 0 }}</p>
             </div>
           </div>
           <button
