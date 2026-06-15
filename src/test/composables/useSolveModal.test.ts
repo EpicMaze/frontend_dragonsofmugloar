@@ -18,7 +18,7 @@ const makeMockMutation = (overrides = {}) => ({
 describe('useSolveModal', () => {
   it('solveAd opens modal immediately before mutation resolves', () => {
     const mutation = makeMockMutation()
-    const { wrapper } = mountComposable(() => useSolveModal(mutation as never))
+    const { wrapper } = mountComposable(() => useSolveModal(mutation as never, ref(null)))
     wrapper.solveAd('ad-1')
     expect(wrapper.isOpen.value).toBe(true)
   })
@@ -36,7 +36,7 @@ describe('useSolveModal', () => {
     const mutation = makeMockMutation({
       mutate: vi.fn((_adId, callbacks) => callbacks.onSuccess?.(result)),
     })
-    const { wrapper } = mountComposable(() => useSolveModal(mutation as never))
+    const { wrapper } = mountComposable(() => useSolveModal(mutation as never, ref(null)))
     wrapper.solveAd('ad-1')
     expect(wrapper.result.value).toEqual(result)
     expect(wrapper.isOpen.value).toBe(true)
@@ -48,7 +48,7 @@ describe('useSolveModal', () => {
         (_adId, callbacks) => callbacks.onError?.({ status: 400, message: 'expired' }),
       ),
     })
-    const { wrapper } = mountComposable(() => useSolveModal(mutation as never))
+    const { wrapper } = mountComposable(() => useSolveModal(mutation as never, ref(null)))
     wrapper.solveAd('ad-1')
     expect(wrapper.expired.value).toBe(true)
     expect(wrapper.isOpen.value).toBe(true)
@@ -60,7 +60,7 @@ describe('useSolveModal', () => {
         (_adId, callbacks) => callbacks.onError?.({ status: 500, message: 'server error' }),
       ),
     })
-    const { wrapper } = mountComposable(() => useSolveModal(mutation as never))
+    const { wrapper } = mountComposable(() => useSolveModal(mutation as never, ref(null)))
     wrapper.solveAd('ad-1')
     expect(wrapper.isOpen.value).toBe(false)
   })
@@ -68,7 +68,7 @@ describe('useSolveModal', () => {
   it('exposes isPending from mutation', () => {
     const isPending = ref(true)
     const mutation = makeMockMutation({ isPending })
-    const { wrapper } = mountComposable(() => useSolveModal(mutation as never))
+    const { wrapper } = mountComposable(() => useSolveModal(mutation as never, ref(null)))
     expect(wrapper.isPending.value).toBe(true)
   })
 })

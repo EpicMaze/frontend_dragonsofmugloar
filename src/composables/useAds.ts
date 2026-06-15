@@ -5,6 +5,18 @@ import { useGameStore } from '@/stores/game'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { computed, ref, toValue, type MaybeRefOrGetter } from 'vue'
 
+interface GameStatsSnapshot {
+  gold: number
+  score: number
+  lives: number
+}
+
+export interface SolveStatsDiff {
+  gold: number
+  score: number
+  lives: number
+}
+
 export const adsQueryKey = (gameId: string) => ['ads', gameId] as const
 
 export const useAds = (gameId: MaybeRefOrGetter<string>) => {
@@ -13,6 +25,8 @@ export const useAds = (gameId: MaybeRefOrGetter<string>) => {
   const store = useGameStore()
 
   const fetchTurn = ref<number | null>(null)
+
+  const solveDiff = ref<SolveStatsDiff | null>(null)
 
   const adsQuery = useQuery({
     queryKey,
@@ -31,7 +45,7 @@ export const useAds = (gameId: MaybeRefOrGetter<string>) => {
     Awaited<ReturnType<typeof solveAdService>>,
     ApiError,
     string,
-    { previousAds?: Ad[] }
+    { previousAds?: Ad[]; previousStats?: GameStatsSnapshot }
   >({
     mutationFn: (adId: string) => solveAdService(toValue(gameId), adId),
     onMutate: async (adId: string) => {
@@ -41,15 +55,24 @@ export const useAds = (gameId: MaybeRefOrGetter<string>) => {
       // take snapshot
       const previousAds = queryClient.getQueryData<Ad[]>(queryKey.value)
 
+      // take prev stats + reputation snapshop
+      const previousStats = store.game
+        ? {
+            gold: store.game.gold,
+            score: store.game.score,
+            lives: store.game.lives,
+          }
+        : undefined
+
       // optimistic update -> remove message from cached object
       queryClient.setQueryData<Ad[]>(queryKey.value, (old) => {
         if (!old) return old
         return old.filter((msg) => msg.adId !== adId)
       })
 
-      return { previousAds }
+      return { previousAds, previousStats }
     },
-    onSuccess: (result) => {
+    onSuccess: (result, _adId, context) => {
       const updatedStats = {
         lives: result.lives,
         gold: result.gold,
@@ -63,6 +86,14 @@ export const useAds = (gameId: MaybeRefOrGetter<string>) => {
         store.setGameOver('lost')
         return
       }
+
+      solveDiff.value = context?.previousStats
+        ? {
+            gold: result.gold - context.previousStats.gold,
+            score: result.score - context.previousStats.score,
+            lives: result.lives - context.previousStats.lives,
+          }
+        : null
 
       // invalidate reputation -> refetch
       queryClient.invalidateQueries({ queryKey: ['reputation', toValue(gameId)] })
@@ -87,5 +118,6 @@ export const useAds = (gameId: MaybeRefOrGetter<string>) => {
     solveMutation,
     refetchAds,
     fetchTurn,
+    solveDiff,
   }
 }

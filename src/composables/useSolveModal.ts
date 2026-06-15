@@ -1,10 +1,14 @@
+import type { Ref } from 'vue'
 import { useActionModal } from './useActionModal'
-import type { useAds } from './useAds'
+import type { SolveStatsDiff, useAds } from './useAds'
 import type { SolveAdResponse, ApiError } from '@/api/types'
 
 type SolveMutation = ReturnType<typeof useAds>['solveMutation']
 
-export const useSolveModal = (solveMutation: SolveMutation) => {
+export const useSolveModal = (
+  solveMutation: SolveMutation,
+  solveDiff: Ref<SolveStatsDiff | null>,
+) => {
   const modal = useActionModal<SolveAdResponse>()
 
   const solveAd = (adId: string) => {
@@ -30,5 +34,6 @@ export const useSolveModal = (solveMutation: SolveMutation) => {
     handleOpenChange: modal.handleOpenChange,
     result: modal.content,
     expired: modal.expired,
+    solveDiff,
   }
 }
