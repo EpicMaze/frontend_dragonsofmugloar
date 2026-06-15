@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { mountComposable } from '../wrappers'
 import { useSolveModal } from '@/composables/useSolveModal'
 import type { ApiError, SolveAdResponse } from '@/api/types'
+import type { SolveStatsDiff } from '@/composables/useAds'
 
 type MutateCallback<T> = {
   onSuccess?: (result: T) => void
@@ -33,12 +34,17 @@ describe('useSolveModal', () => {
       turn: 2,
       message: 'You did it',
     }
+    const diff: SolveStatsDiff = {
+      gold: 50,
+      score: 50,
+      lives: 3,
+    }
     const mutation = makeMockMutation({
       mutate: vi.fn((_adId, callbacks) => callbacks.onSuccess?.(result)),
     })
-    const { wrapper } = mountComposable(() => useSolveModal(mutation as never, ref(null)))
+    const { wrapper } = mountComposable(() => useSolveModal(mutation as never, ref(diff)))
     wrapper.solveAd('ad-1')
-    expect(wrapper.result.value).toEqual(result)
+    expect(wrapper.result.value).toEqual({ result, diff })
     expect(wrapper.isOpen.value).toBe(true)
   })
 

@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { mountComposable } from '../wrappers'
 import { usePurchaseModal } from '@/composables/usePurchaseModal'
 import type { PurchaseItemResponse } from '@/api/types'
+import type { PurchaseStatsDiff } from '@/composables/useShop'
 
 const makeMockMutation = (overrides = {}) => ({
   mutate: vi.fn(),
@@ -26,12 +27,16 @@ describe('usePurchaseModal', () => {
       level: 1,
       turn: 1,
     }
+    const diff: PurchaseStatsDiff = {
+      gold: 50,
+      level: 100,
+    }
     const mutation = makeMockMutation({
       mutate: vi.fn((_itemId, callbacks) => callbacks.onSuccess(result)),
     })
-    const { wrapper } = mountComposable(() => usePurchaseModal(mutation as never, ref(null)))
+    const { wrapper } = mountComposable(() => usePurchaseModal(mutation as never, ref(diff)))
     wrapper.purchaseItem('item-1')
-    expect(wrapper.result.value).toEqual(result)
+    expect(wrapper.result.value).toEqual({ result, diff })
     expect(wrapper.isOpen.value).toBe(true)
   })
 

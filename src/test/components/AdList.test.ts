@@ -23,7 +23,7 @@ describe('AdList', () => {
     const { wrapper, pinia } = mountWithQuery(AdList)
     const store = useGameStore(pinia)
     store.$patch({ game: mockGame })
-    expect(wrapper.text()).toContain('Loading ads...')
+    expect(wrapper.text()).toContain('Loading tasks...')
   })
 
   it('renders ad cards when ads available', async () => {
@@ -40,7 +40,7 @@ describe('AdList', () => {
     const store = useGameStore(pinia)
     store.$patch({ game: mockGame })
     await flushPromises()
-    expect(wrapper.text()).toContain('No ads available')
+    expect(wrapper.text()).toContain('No tasks available')
   })
 
   it('renders error state on fetch failure', async () => {
@@ -53,7 +53,7 @@ describe('AdList', () => {
     const store = useGameStore(pinia)
     store.$patch({ game: mockGame })
     await flushPromises()
-    expect(wrapper.text()).toContain('Failed to load ads')
+    expect(wrapper.text()).toContain('Failed to load tasks')
   })
 
   it('shows ad count', async () => {

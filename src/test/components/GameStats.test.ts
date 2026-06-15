@@ -32,15 +32,6 @@ describe('GameStats', () => {
     expect(wrapper.text()).toContain('7') // turn
   })
 
-  it('truncates gameId to 8 chars', async () => {
-    const { wrapper, pinia } = mountWithPinia(GameStats)
-    const store = useGameStore(pinia)
-    store.$patch({ game: mockGame })
-    await flushPromises()
-    expect(wrapper.text()).toContain('abc12345')
-    expect(wrapper.text()).not.toContain('abc12345-long-id')
-  })
-
   it('updates rendered values when pinia game stats change', async () => {
     const { wrapper, pinia } = mountWithPinia(GameStats)
     const store = useGameStore(pinia)

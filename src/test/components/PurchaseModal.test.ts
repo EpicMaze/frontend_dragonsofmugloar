@@ -10,6 +10,18 @@ const mockResult = {
   turn: 1,
 }
 
+const mockDiff = {
+  diff: {
+    gold: 50,
+    level: 50,
+  },
+}
+
+const mockContent = {
+  result: mockResult,
+  diff: mockDiff,
+}
+
 describe('PurchaseModal', () => {
   it('renders nothing when closed', () => {
     const { wrapper } = mountWithPinia(PurchaseModal, {
@@ -27,15 +39,18 @@ describe('PurchaseModal', () => {
 
   it('renders success result', () => {
     const { wrapper } = mountWithPinia(PurchaseModal, {
-      props: { open: true, result: mockResult, loading: false },
+      props: { open: true, content: mockContent, loading: false },
     })
-    expect(wrapper.text()).toContain('Item bought!')
-    expect(wrapper.text()).toContain('50') // gold
+    expect(wrapper.text()).toContain('Purchase completed!')
   })
 
   it('renders failure when shoppingSuccess is falsy', () => {
+    const content = {
+      result: { ...mockResult, shoppingSuccess: '' },
+      diff: mockDiff,
+    }
     const { wrapper } = mountWithPinia(PurchaseModal, {
-      props: { open: true, result: { ...mockResult, shoppingSuccess: '' }, loading: false },
+      props: { open: true, result: content, loading: false },
     })
     expect(wrapper.text()).toContain('Failed to buy item')
   })

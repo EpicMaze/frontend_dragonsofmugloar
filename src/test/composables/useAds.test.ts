@@ -175,4 +175,24 @@ describe('useAds', () => {
 
     expect(adsQuery.data.value).toHaveLength(1)
   })
+
+  it('sets solveDiff after successful solve', async () => {
+    const {
+      wrapper: { solveMutation, solveDiff },
+    } = mountComposable(() => {
+      const store = useGameStore()
+      store.$patch({ game: mockGame })
+      return useAds('game-1')
+    })
+    await flushPromises()
+
+    solveMutation.mutate('msg-1')
+    await flushPromises()
+
+    expect(solveDiff.value).toEqual({
+      gold: 100, // result.gold - mockGame.gold
+      score: 100, // result.score - mockGame.score
+      lives: 0, // result.lives - mockGame.lives
+    })
+  })
 })

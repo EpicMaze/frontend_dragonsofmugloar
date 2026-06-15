@@ -32,7 +32,7 @@ describe('assessRisk', () => {
 
   it('scores max difficulty for hardest unencrypted probability', () => {
     const result = assessRisk({ ...baseAd, probability: MAX_DIFFICULTY, encrypted: null })
-    expect(result.score).toBe(9)
+    expect(result.score).toBe(MAX_DIFFICULTY_LEVEL)
     expect(result.breakdown.difficultyLevel).toBe(maxDifficultyScore)
   })
 

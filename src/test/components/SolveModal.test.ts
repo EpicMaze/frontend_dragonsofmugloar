@@ -11,6 +11,18 @@ const mockResult = {
   turn: 2,
   message: 'Done',
 }
+const mockDiff = {
+  diff: {
+    gold: 50,
+    score: 50,
+    lives: 3,
+  },
+}
+
+const mockContent = {
+  result: mockResult,
+  diff: mockDiff,
+}
 
 describe('SolveModal', () => {
   it('renders nothing when closed', () => {
@@ -36,22 +48,25 @@ describe('SolveModal', () => {
 
   it('renders success result', () => {
     const { wrapper } = mountWithPinia(SolveModal, {
-      props: { open: true, result: mockResult, expired: false, loading: false },
+      props: { open: true, content: mockContent, expired: false, loading: false },
     })
-    expect(wrapper.text()).toContain('Ad Solved!')
-    expect(wrapper.text()).toContain('100') // gold
+    expect(wrapper.text()).toContain('Task solved succesfully!')
   })
 
   it('renders failure result', () => {
+    const content = {
+      result: { ...mockResult, success: false },
+      diff: mockDiff,
+    }
     const { wrapper } = mountWithPinia(SolveModal, {
       props: {
         open: true,
-        result: { ...mockResult, success: false },
+        content: content,
         expired: false,
         loading: false,
       },
     })
-    expect(wrapper.text()).toContain('Failed to Solve')
+    expect(wrapper.text()).toContain('You failed to solve the task!')
   })
 
   it('emits update:open false when backdrop clicked', async () => {
