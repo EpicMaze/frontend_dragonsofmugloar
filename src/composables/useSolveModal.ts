@@ -2,7 +2,7 @@ import type { Ref } from 'vue'
 import { useActionModal } from './useActionModal'
 import type { SolveStatsDiff, useAds } from './useAds'
 import type { ApiError } from '@/api/types'
-import type { SolveModalContent } from '@/components/game/SolveModal.vue'
+import type { SolveModalContent } from '@/components/SolveModal.vue'
 
 type SolveMutation = ReturnType<typeof useAds>['solveMutation']
 

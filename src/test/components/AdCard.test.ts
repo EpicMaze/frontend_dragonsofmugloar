@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mountWithQuery } from '../wrappers'
-import AdCard from '@/components/game/AdCard.vue'
+import AdCard from '@/components/AdCard.vue'
 import { useGameStore } from '@/stores/game'
 import { flushPromises } from '@vue/test-utils'
 

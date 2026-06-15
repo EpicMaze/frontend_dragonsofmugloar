@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mountWithPinia } from '../wrappers'
-import SolveModal from '@/components/game/SolveModal.vue'
+import SolveModal from '@/components/SolveModal.vue'
 
 const mockResult = {
   success: true,

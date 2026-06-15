@@ -4,10 +4,10 @@
   import { storeToRefs } from 'pinia'
   import { useGameStore } from '@/stores/game'
   import { useReputation } from '@/composables/useReputation'
-  import AdList from '@/components/game/AdList.vue'
-  import ShopPanel from '@/components/game/ShopPanel.vue'
-  import GameStats from '@/components/game/GameStats.vue'
-  import ReputationStats from '@/components/game/ReputationStats.vue'
+  import AdList from '@/components/AdList.vue'
+  import ShopList from '@/components/ShopList.vue'
+  import GameStats from '@/components/GameStats.vue'
+  import ReputationStats from '@/components/ReputationStats.vue'
 
   type GameView = 'ads' | 'shop'
 
@@ -64,7 +64,7 @@
       <!-- CENTER: Main Viewport -->
       <main class="space-y-4 order-3 lg:order-2">
         <AdList v-if="currentView === 'ads'" />
-        <ShopPanel v-if="currentView === 'shop'" />
+        <ShopList v-if="currentView === 'shop'" />
       </main>
 
       <!-- RIGHT: Stats & Reputation -->

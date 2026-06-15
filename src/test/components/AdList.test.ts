@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import { http, HttpResponse } from 'msw'
 import { mountWithQuery } from '../wrappers'
-import AdList from '@/components/game/AdList.vue'
+import AdList from '@/components/AdList.vue'
 import { useGameStore } from '@/stores/game'
 import { server } from '../server'
 

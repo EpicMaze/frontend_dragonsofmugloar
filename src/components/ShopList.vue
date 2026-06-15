@@ -4,7 +4,7 @@
   import { useGameStore } from '@/stores/game'
   import { useShop } from '@/composables/useShop'
   import { usePurchaseModal } from '@/composables/usePurchaseModal'
-  import ShopItem from './ShopItem.vue'
+  import ShopCard from './ShopCard.vue'
   import PurchaseModal from './PurchaseModal.vue'
 
   const store = useGameStore()
@@ -44,7 +44,7 @@
     <p v-else-if="items.length === 0" class="text-center text-slate-500">No items available.</p>
 
     <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-      <ShopItem
+      <ShopCard
         v-for="item in items"
         :key="item.id"
         :item="item"

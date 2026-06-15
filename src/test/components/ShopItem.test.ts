@@ -1,20 +1,20 @@
 import { describe, it, expect } from 'vitest'
 import { mountWithPinia } from '../wrappers'
-import ShopItem from '@/components/game/ShopItem.vue'
+import ShopCard from '@/components/ShopCard.vue'
 import { useGameStore } from '@/stores/game'
 import { nextTick } from 'vue'
 
 const mockItem = { id: 'item-1', name: 'Health Potion', cost: 50 }
 
-describe('ShopItem', () => {
+describe('ShopCard', () => {
   it('renders item name and cost', () => {
-    const { wrapper } = mountWithPinia(ShopItem, { props: { item: mockItem, loading: false } })
+    const { wrapper } = mountWithPinia(ShopCard, { props: { item: mockItem, loading: false } })
     expect(wrapper.text()).toContain('Health Potion')
     expect(wrapper.text()).toContain('50')
   })
 
   it('emits purchase event with item id on buy click when enough gold', async () => {
-    const { wrapper, pinia } = mountWithPinia(ShopItem, {
+    const { wrapper, pinia } = mountWithPinia(ShopCard, {
       props: { item: mockItem, loading: false },
     })
     const store = useGameStore(pinia)
@@ -26,7 +26,7 @@ describe('ShopItem', () => {
   })
 
   it('does not emits purchase event with item id on buy click when not enough gold', async () => {
-    const { wrapper } = mountWithPinia(ShopItem, {
+    const { wrapper } = mountWithPinia(ShopCard, {
       props: { item: mockItem, loading: false },
     })
     await wrapper.find('button').trigger('click')
@@ -34,7 +34,7 @@ describe('ShopItem', () => {
   })
 
   it('disables button when loading', () => {
-    const { wrapper } = mountWithPinia(ShopItem, { props: { item: mockItem, loading: true } })
+    const { wrapper } = mountWithPinia(ShopCard, { props: { item: mockItem, loading: true } })
     expect(wrapper.find('button').attributes('disabled')).toBeDefined()
   })
 })

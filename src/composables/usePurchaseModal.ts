@@ -2,7 +2,7 @@ import type { Ref } from 'vue'
 import { useActionModal } from './useActionModal'
 import type { PurchaseStatsDiff, useShop } from './useShop'
 import type { ApiError } from '@/api/types'
-import type { PurchaseModalContent } from '@/components/game/PurchaseModal.vue'
+import type { PurchaseModalContent } from '@/components/PurchaseModal.vue'
 
 type PurchaseMutation = ReturnType<typeof useShop>['purchaseMutation']
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mountWithPinia } from '../wrappers'
-import AdRiskLabel from '@/components/game/AdRiskLabel.vue'
+import AdRiskLabel from '@/components/AdRiskLabel.vue'
 import { MAX_RISK_SCORE } from '@/lib/const'
 
 const baseBreakdown = { difficultyLevel: 0, isEncrypted: false }

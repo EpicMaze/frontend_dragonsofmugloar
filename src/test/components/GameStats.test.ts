@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mountWithPinia } from '../wrappers'
-import GameStats from '@/components/game/GameStats.vue'
+import GameStats from '@/components/GameStats.vue'
 import { useGameStore } from '@/stores/game'
 import { flushPromises } from '@vue/test-utils'
 

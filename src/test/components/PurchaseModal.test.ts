@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mountWithPinia } from '../wrappers'
-import PurchaseModal from '@/components/game/PurchaseModal.vue'
+import PurchaseModal from '@/components/PurchaseModal.vue'
 
 const mockResult = {
   shoppingSuccess: 'true',
