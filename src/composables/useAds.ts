@@ -1,7 +1,8 @@
-import type { Ad, ApiError } from '@/api/types'
+import type { ApiError } from '@/api/types'
 import { notify } from '@/lib/notify'
 import { fetchAdsService, solveAdService } from '@/service/ads'
 import { useGameStore } from '@/stores/game'
+import type { Ad } from '@/types/domain'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { computed, ref, toValue, type MaybeRefOrGetter } from 'vue'
 

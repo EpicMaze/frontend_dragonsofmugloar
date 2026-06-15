@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { MAX_RISK_SCORE } from '@/lib/const'
-  import type { RiskBreakdown, RiskNotes } from '@/lib/types'
+  import type { RiskBreakdown, RiskNotes } from '@/types/risk'
   import { computed } from 'vue'
 
   const props = defineProps<{

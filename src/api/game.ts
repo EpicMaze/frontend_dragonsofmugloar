@@ -1,5 +1,5 @@
+import type { Game, Reputation } from '@/types/domain'
 import { apiClient } from './client'
-import type { Game, Reputation } from './types'
 
 export const postStartGame = async () => {
   return apiClient.post<Game>('/game/start')

@@ -1,7 +1,8 @@
-import type { ApiError, ShopItem } from '@/api/types'
+import type { ApiError } from '@/api/types'
 import { notify } from '@/lib/notify'
 import { fetchShopItemsService, purchaseItemService } from '@/service/shop'
 import { useGameStore } from '@/stores/game'
+import type { ShopItem } from '@/types/domain'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { computed, ref, toValue, type MaybeRefOrGetter } from 'vue'
 
@@ -14,6 +15,7 @@ export interface PurchaseStatsDiff {
   gold: number
   level: number
 }
+
 export const shopQueryKey = (gameId: string) => ['shopItems', gameId] as const
 
 export const useShop = (gameId: MaybeRefOrGetter<string>) => {

@@ -1,5 +1,6 @@
+import type { ShopItem } from '@/types/domain'
 import { apiClient } from './client'
-import type { PurchaseItemResponse, ShopItem } from './types'
+import type { PurchaseItemResponse } from './types'
 
 export const getShopItems = (gameId: string) => {
   return apiClient.get<ShopItem[]>(`/${gameId}/shop`)

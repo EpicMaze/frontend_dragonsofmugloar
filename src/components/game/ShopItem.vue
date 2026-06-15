@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import type { ShopItem } from '@/api/types'
   import { useGameStore } from '@/stores/game'
+  import type { ShopItem } from '@/types/domain'
   import { computed } from 'vue'
 
   const props = defineProps<{

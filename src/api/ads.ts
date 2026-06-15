@@ -1,5 +1,6 @@
+import type { Ad } from '@/types/domain'
 import { apiClient } from './client'
-import type { Ad, SolveAdResponse } from './types'
+import type { SolveAdResponse } from './types'
 
 export const getAds = (gameId: string) => {
   return apiClient.get<Ad[]>(`/${gameId}/messages`)

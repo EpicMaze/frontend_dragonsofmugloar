@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { useGameStore } from '@/stores/game'
 import { createQueryClient } from '@/lib/queryClient'
-import type { Game } from '@/api/types'
+import type { Game } from '@/types/domain.ts'
 
 type Retry = (failureCount: number, error: unknown) => boolean
 

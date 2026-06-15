@@ -1,7 +1,7 @@
 // module for risk assesment of the message solve result
 
-import type { Ad } from '@/api/types'
-import type { DecryptResult, RiskAssessment, RiskNotes } from './types'
+import type { Ad } from '@/types/domain.ts'
+import type { DecryptResult, RiskAssessment, RiskNotes } from '@/types/risk'
 import { MAX_DIFFICULTY_LEVEL, ADS_DECODERS, RISK_WEIGHTS, DIFFICULTY_LEVELS } from './const'
 
 export const decodeAd = (ad: Pick<Ad, 'message' | 'probability' | 'encrypted'>): DecryptResult => {

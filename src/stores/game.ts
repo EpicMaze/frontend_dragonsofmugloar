@@ -1,4 +1,4 @@
-import type { Game, Reputation } from '@/api/types'
+import type { Game, Reputation } from '@/types/domain'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 

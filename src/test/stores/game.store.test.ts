@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useGameStore } from '@/stores/game'
-import type { Game } from '@/api/types'
+import type { Game } from '@/types/domain.ts'
 
 const mockGame: Game = {
   gameId: 'game-1',

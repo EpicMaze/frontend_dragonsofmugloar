@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import type { Ad } from '@/api/types'
+  import type { Ad } from '@/types/domain.ts'
   import { computed, ref } from 'vue'
   import { assessRisk, calcTurnsRemaining, decodeAd } from '@/lib/riskAnalysis.ts'
   import AdRiskLabel from './AdRiskLabel.vue'
