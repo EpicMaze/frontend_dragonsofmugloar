@@ -7,15 +7,23 @@
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
-    "test": "vitest",
-    "test:watch": "vitest --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "type-check:watch": "vue-tsc --build --watch",
     "lint": "run-s lint:*",
     "lint:oxlint": "oxlint . --fix",
     "lint:eslint": "eslint . --fix --cache",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "ci": "run-s type-check lint test build",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{vue,ts}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   },
   "dependencies": {
     "@phosphor-icons/vue": "^2.2.1",
@@ -47,8 +55,10 @@
     "eslint": "^10.2.1",
     "eslint-plugin-oxlint": "~1.60.0",
     "eslint-plugin-vue": "~10.8.0",
+    "husky": "^9.1.7",
     "jiti": "^2.6.1",
     "jsdom": "^29.1.1",
+    "lint-staged": "^17.0.7",
     "msw": "^2.14.6",
     "npm-run-all2": "^8.0.4",
     "oxlint": "~1.60.0",
